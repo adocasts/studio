@@ -172,6 +172,6 @@ export default class SettingsController {
 
     session.flash('success', "Your account has been successfully deleted.")
 
-    return response.redirect().toRoute('auth.signup.show')
+    return response.redirect().toRoute('auth.signin.show')
   }
 }
