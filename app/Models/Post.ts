@@ -328,13 +328,13 @@ export default class Post extends AppBaseModel {
 
     switch (this.postTypeId) {
       case PostType.BLOG:
-        return Route.makeUrl('posts.show', { slug: this.slug })
+        return `/posts/${this.slug}`
       case PostType.NEWS:
-        return Route.makeUrl('news.show', { slug: this.slug })
+        return `/news/${this.slug}`
       case PostType.LIVESTREAM:
-        return Route.makeUrl('livestreams.show', { slug: this.slug })
+        return `/streams/${this.slug}`
       default:
-        return Route.makeUrl('lessons.show', { slug: this.slug })
+        return `/lessons/${this.slug}`
     }
   }
 

@@ -53,6 +53,9 @@ export default class TaxonomyValidator extends BaseValidator {
     pageTitle: schema.string.optional({ trim: true }, [rules.maxLength(100)]),
     description: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
     metaDescription: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+    assetTypeIds: schema.array.optional().members(schema.number()),
+		altTexts: schema.array.optional().members(schema.string.optional()),
+		credits: schema.array.optional().members(schema.string.optional()),
     postIds: schema.array.optional().members(schema.number([rules.exists({ table: 'posts', column: 'id' })])),
   })
 

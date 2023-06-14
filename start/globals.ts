@@ -31,18 +31,7 @@ View.global('appUrl', (path) => {
 View.global('affiliateService', AffiliateService)
 
 View.global('routePost', (post: Post, params: { [x: string]: any }, options: { [x: string]: any }) => {
-  switch(post.postTypeId) {
-    case PostType.LESSON:
-      return Route.makeUrl('lessons.show', params, options)
-    case PostType.BLOG:
-      return Route.makeUrl('posts.show', params, options)
-    case PostType.NEWS:
-      return Route.makeUrl('news.show', params, options)
-    case PostType.LIVESTREAM:
-      return Route.makeUrl('livestreams.show', params, options)
-    case PostType.LINK:
-      return post.redirectUrl
-  }
+  return post.routeUrl
 })
 
 View.global('img', AssetService.getAssetUrl)

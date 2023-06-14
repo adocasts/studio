@@ -147,7 +147,7 @@
           label: 'Repository Url',
           name: 'repositoryUrl',
           placeholder: 'Enter the URL to the collection repo',
-          value: flashMessages.get('repositoryUrl') ?? post?.repositoryUrl ?? '',
+          value: flashMessages.get('repositoryUrl') ?? collection?.repositoryUrl ?? '',
           errors: flashMessages.get('errors.repositoryUrl')
         })
 

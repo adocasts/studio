@@ -10,16 +10,18 @@
         Publish
       @end
 
-      @button({ onClick: `saveAs(${StateEnum.DRAFT})`, variant: 'baseSecondary' })
-        Save As Draft
-      @end
+      @if (!post?.id && post.stateId === StateEnum.DRAFT)
+        @button({ onClick: `saveAs(${StateEnum.DRAFT})`, variant: 'baseSecondary' })
+          Save As Draft
+        @end
+      @endif
 
       @button({ onClick: `saveAs(${StateEnum.UNLISTED})`, variant: 'baseSecondary' })
-        Save As Unlisted
+        {{ post?.id ? 'Switch To' : 'Save As' }} Unlisted
       @end
 
       @button({ onClick: `saveAs(${StateEnum.PRIVATE})`, variant: 'baseSecondary' })
-        Save As Private
+        {{ post?.id ? 'Switch To' : 'Save As' }} Private
       @end
     </div>
   @end

@@ -2,6 +2,7 @@ import Collection from 'App/Models/Collection'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Post from 'App/Models/Post'
 import CacheService from 'App/Services/CacheService'
+import AssetService from './AssetService'
 
 export default class CollectionService {
   public static async getLastUpdated(limit: number = 4, excludeIds: number[] = []) {
@@ -78,11 +79,15 @@ export default class CollectionService {
     return subCollections
   }
 
-  public static async updateOrCreate(collectionId: number | undefined, { postIds, taxonomyIds, subcollectionCollectionIds = [], subcollectionCollectionNames = [], subcollectionPostIds = [], ...data }: { [x: string]: any }) {
+  public static async updateOrCreate(collectionId: number | undefined, { postIds, taxonomyIds, assetId, assetTypeIds, altTexts, credits, subcollectionCollectionIds = [], subcollectionCollectionNames = [], subcollectionPostIds = [], ...data }: { [x: string]: any }) {
     const collection = await Collection.firstOrNewById(collectionId)
 
     await collection.merge(data).save()
 
+    if (assetId) {
+      await AssetService.syncAssetTypes([assetId], assetTypeIds, altTexts, credits)
+    }
+    
     await CollectionService.syncPosts(collection, postIds, { root_collection_id: collection.id })
     await CollectionService.syncTaxonomies(collection, taxonomyIds)
 

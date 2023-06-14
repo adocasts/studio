@@ -115,7 +115,7 @@ export default class AssetService {
   }
 
   public static async syncAssetTypes(assetIds: number[] | undefined, assetTypeIds: number[] | undefined, altTexts: (string | undefined)[] | undefined, credits: (string | undefined)[] | undefined) {
-    if (!assetIds || !assetTypeIds) return
+    if (!assetIds || !assetTypeIds || !assetIds.filter(Boolean).length) return
 
     const promises = assetIds.map((id, i) => {
       const assetTypeId = assetTypeIds[i]

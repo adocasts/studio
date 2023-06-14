@@ -3,6 +3,7 @@ import Taxonomy from "App/Models/Taxonomy";
 import TaxonomyValidator from "App/Validators/TaxonomyValidator";
 import TaxonomyService from 'App/Services/TaxonomyService'
 import CacheService from 'App/Services/CacheService'
+import AssetService from 'App/Services/AssetService';
 
 export default class TaxonomiesController {
   public async index({ view }: HttpContextContract) {
@@ -47,7 +48,11 @@ export default class TaxonomiesController {
 
   public async update({ request, response, params }: HttpContextContract) {
     const taxonomy = await Taxonomy.findOrFail(params.id)
-    const { postIds, ...data } = await request.validate(TaxonomyValidator)
+    const { postIds, assetId, assetTypeIds, altTexts, credits, ...data } = await request.validate(TaxonomyValidator)
+
+    if (assetId) {
+      await AssetService.syncAssetTypes([assetId], assetTypeIds, altTexts, credits)
+    }
 
     await taxonomy.merge(data).save()
     await TaxonomyService.syncPosts(taxonomy, postIds)

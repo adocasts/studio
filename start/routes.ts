@@ -26,6 +26,12 @@ Route.get('/signin',  'AuthController.signinShow').as('auth.signin.show')
 Route.post('/signin', 'AuthController.signin').as('auth.signin')//.middleware(['honeypot'])
 Route.get('/signout', 'AuthController.signout').as('auth.signout')
 
+/**
+ * images
+ */
+Route.get('/img/:userId/:filename', 'AssetsController.show').as('userimg')
+Route.get('/img/*', 'AssetsController.show').where('path', /.*/).as('img')
+
 // STUDIO
 Route.group(() => {
 

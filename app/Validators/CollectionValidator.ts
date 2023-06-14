@@ -50,6 +50,9 @@ export default class CollectionValidator extends BaseValidator {
 				schema.number([rules.exists({ table: 'posts', column: 'id' })])
 			)
 		),
+		assetTypeIds: schema.array.optional().members(schema.number()),
+		altTexts: schema.array.optional().members(schema.string.optional()),
+		credits: schema.array.optional().members(schema.string.optional()),
     taxonomyIds: schema.array.optional().members(schema.number([rules.exists({ table: 'taxonomies', column: 'id' })]))
   })
 }

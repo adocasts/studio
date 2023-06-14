@@ -97,12 +97,6 @@
     </div>
 
     <div class="hidden md:flex items-center md:ml-3 lg:ml-12">
-      @!header.desktop.search()
-
-      <div class="mr-4">
-        @!header.theme()
-      </div>
-
       @if (auth.user)
         <button 
           @click="toggleNotifications" 
