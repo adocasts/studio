@@ -10,7 +10,6 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { string } from '@ioc:Adonis/Core/Helpers'
 import Status from 'App/Enums/Status'
 import Post from 'App/Models/Post'
-import Route from '@ioc:Adonis/Core/Route'
 import Comment from 'App/Models/Comment'
 import NotificationService from 'App/Services/NotificationService'
 import Env from '@ioc:Adonis/Core/Env'
@@ -30,7 +29,7 @@ View.global('appUrl', (path) => {
 
 View.global('affiliateService', AffiliateService)
 
-View.global('routePost', (post: Post, params: { [x: string]: any }, options: { [x: string]: any }) => {
+View.global('routePost', (post: Post, _params: { [x: string]: any }, _options: { [x: string]: any }) => {
   return post.routeUrl
 })
 

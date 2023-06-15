@@ -27,7 +27,6 @@ import Watchlist from 'App/Models/Watchlist'
 import * as timeago from 'timeago.js'
 import History from 'App/Models/History'
 import HistoryTypes from 'App/Enums/HistoryTypes'
-import Route from '@ioc:Adonis/Core/Route'
 import AssetTypes from 'App/Enums/AssetTypes'
 
 export default class Post extends AppBaseModel {
