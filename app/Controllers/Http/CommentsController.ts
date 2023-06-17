@@ -18,7 +18,7 @@ export default class CommentsController {
       .orderBy('created_at', 'desc')
       .paginate(page, 10)
 
-    comments.baseUrl('/studio/comments')
+    comments.baseUrl('/comments')
 
     return view.render('studio/comments/index', { comments })
   }

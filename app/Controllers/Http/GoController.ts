@@ -17,9 +17,9 @@ export default class GoController {
     }
 
     if (!comment.isPublic) {
-      return response.redirect(`/studio/comments#comment${commentId}`)
+      return response.redirect(`/comments#comment${commentId}`)
     }
 
-    return response.redirect(`/lessons/${post.slug}#comment${commentId}`)
+    return response.redirect(`https://adocasts.com/lessons/${post.slug}#comment${commentId}`)
   }
 }

@@ -23,7 +23,7 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
     },
 
     async addCollection() {
-      const { data } = await axios.post('/api/studio/collections/stub', { parentId })
+      const { data } = await axios.post('/api/collections/stub', { parentId })
       this.collections.push(data.collection)
       this.$nextTick(() => {
         this.initAutocomplete(`#autocomplete_collection_${data.collection.id}`, data.collection)
@@ -31,7 +31,7 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
     },
 
     async deleteCollection(collection) {
-      await axios.delete(`/studio/collections/${collection.id}`)
+      await axios.delete(`/collections/${collection.id}`)
       this.collections = this.collections.filter(c => c.id != collection.id)
     },
 
@@ -65,7 +65,7 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
             try {
               this.loading = true
               const ignoreIds = this.getIgnoreIds(collection).join(',')
-              const { data } = await axios.get(`/api/studio/posts/search?term=${query}&ignore=${ignoreIds}&limit=${limit}`)
+              const { data } = await axios.get(`/api/posts/search?term=${query}&ignore=${ignoreIds}&limit=${limit}`)
               this.loading = false
               this.options = data.posts
               return data.posts
