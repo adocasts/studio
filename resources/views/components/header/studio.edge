@@ -1,5 +1,5 @@
 @set('activeUrl', request.url(false))
-@set('Nav', (name, href, show) => ({ name, href, show, active: activeUrl === href }))
+@set('Nav', (name, href, show) => ({ name, href, show, active: activeUrl.includes(href.replace(/\/$/, '')) }))
 
 @set('studioRoutes', [
   Nav('Dashboard', '#', 'StudioPolicy.viewDashboard'),
@@ -16,11 +16,10 @@
       <ul class="list-none flex space-x-4 lg:space-x-3">
         @each(item in studioRoutes)
           @can(item.show)
-            @set('isActive', request.matchesRoute(item.href))
             <li>
               <a
-                href="{{ item.href }}"
-                class="{{ isActive ? 'bg-brand-800' : 'bg-transparent' }} text-brand-200 hover:bg-brand-900 transition duration-300 hover:text-white rounded-full text-sm px-2 lg:px-3 py-1 inline-block {{ item.active && 'bg-brand-900 text-white' }} {{ item.soon && 'opacity-40' }}">
+                href="{{ item.href.replace(/\/$/, '') }}"
+                class="{{ item.active ? 'bg-brand-800' : 'bg-transparent' }} text-brand-200 hover:bg-brand-900 transition duration-300 hover:text-white rounded-full text-sm px-2 lg:px-3 py-1 inline-block {{ item.active && 'bg-brand-900 text-white' }} {{ item.soon && 'opacity-40' }}">
                 {{ item.name }}
               </a>
             </li>

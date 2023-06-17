@@ -1,5 +1,5 @@
 @set('activeUrl', request.url(false))
-@set('Nav', (name, href, show) => ({ name, href, show, active: activeUrl === href }))
+@set('Nav', (name, href, show) => ({ name, href, show, active: activeUrl === href.replace(/\/$/, '') }))
 
 @set('studioRoutes', [
   Nav('Dashboard', '#', 'StudioPolicy.viewDashboard'),
@@ -142,7 +142,7 @@
               Series
             @end
 
-            @header.mobile.menuItem({ href: 'https://adocasts.com/topcis', icon: 'library' })
+            @header.mobile.menuItem({ href: 'https://adocasts.com/topics', icon: 'library' })
               Topics
             @end
 

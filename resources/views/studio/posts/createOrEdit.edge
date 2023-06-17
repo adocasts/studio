@@ -10,7 +10,7 @@
         Publish
       @end
 
-      @if (!post?.id && post.stateId === StateEnum.DRAFT)
+      @if (!post?.id && post?.stateId === StateEnum.DRAFT)
         @button({ onClick: `saveAs(${StateEnum.DRAFT})`, variant: 'baseSecondary' })
           Save As Draft
         @end

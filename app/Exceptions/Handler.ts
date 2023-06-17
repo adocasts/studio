@@ -33,8 +33,6 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public async handle(error: any, ctx: HttpContextContract) {
-    // Sentry.captureException(error)
-    
     if (error.code === 'E_BAD_CSRF_TOKEN') {
       return this.handleExpiredCsrf(ctx)
     }
