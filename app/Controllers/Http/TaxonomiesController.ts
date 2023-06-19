@@ -48,10 +48,10 @@ export default class TaxonomiesController {
 
   public async update({ request, response, params }: HttpContextContract) {
     const taxonomy = await Taxonomy.findOrFail(params.id)
-    const { postIds, assetId, assetTypeIds, altTexts, credits, ...data } = await request.validate(TaxonomyValidator)
+    const { postIds, assetTypeIds, altTexts, credits, ...data } = await request.validate(TaxonomyValidator)
 
-    if (assetId) {
-      await AssetService.syncAssetTypes([assetId], assetTypeIds, altTexts, credits)
+    if (data.assetId) {
+      await AssetService.syncAssetTypes([data.assetId], assetTypeIds, altTexts, credits)
     }
 
     await taxonomy.merge(data).save()

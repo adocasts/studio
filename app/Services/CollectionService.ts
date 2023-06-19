@@ -79,13 +79,13 @@ export default class CollectionService {
     return subCollections
   }
 
-  public static async updateOrCreate(collectionId: number | undefined, { postIds, taxonomyIds, assetId, assetTypeIds, altTexts, credits, subcollectionCollectionIds = [], subcollectionCollectionNames = [], subcollectionPostIds = [], ...data }: { [x: string]: any }) {
+  public static async updateOrCreate(collectionId: number | undefined, { postIds, taxonomyIds, assetTypeIds, altTexts, credits, subcollectionCollectionIds = [], subcollectionCollectionNames = [], subcollectionPostIds = [], ...data }: { [x: string]: any }) {
     const collection = await Collection.firstOrNewById(collectionId)
 
     await collection.merge(data).save()
 
-    if (assetId) {
-      await AssetService.syncAssetTypes([assetId], assetTypeIds, altTexts, credits)
+    if (data.assetId) {
+      await AssetService.syncAssetTypes([data.assetId], assetTypeIds, altTexts, credits)
     }
     
     await CollectionService.syncPosts(collection, postIds, { root_collection_id: collection.id })
