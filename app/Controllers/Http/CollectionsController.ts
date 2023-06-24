@@ -17,7 +17,7 @@ export default class CollectionsController {
       .withCount('posts')
       .whereNull('parentId')
       .orderBy('createdAt', 'desc')
-      .paginate(page, 20)
+      .paginate(page, 100)
 
     const collectionCounts = {}
     collections.map(collection => {

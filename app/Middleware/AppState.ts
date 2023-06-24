@@ -8,7 +8,6 @@ import PostService from 'App/Services/PostService'
 
 export default class AppState {
   public async handle (ctx: HttpContextContract, next: () => Promise<void>) {
-    console.log('in handle appstate', { method: ctx.request.method(), url: ctx.request.url() })
     const settings = (new SettingsService()).build()
     const httpIdentityService = new HttpIdentityService()
     let notifications = await NotificationService.getForDisplay(ctx.auth.user, true)

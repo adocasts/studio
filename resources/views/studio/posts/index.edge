@@ -2,18 +2,20 @@
 
 @section('heading')
   @studio.heading({ heading })
-    <div class="space-x-3">
-      @button({ href: route('studio.posts.index', { postTypeId: PostTypeEnum.LESSON }), variant: 'blackSecondary', size: 'sm' })
-        Lessons
-      @end
+    <div class="flex space-x-3">
+      <div class="flex">
+        @button({ href: route('studio.posts.index', { postTypeId: PostTypeEnum.LESSON }), variant: postTypeId == PostTypeEnum.LESSON ? 'baseSecondary' : 'blackSecondary', size: 'sm', className: 'rounded-r-none' })
+          Lessons
+        @end
 
-      @button({ href: route('studio.posts.index', { postTypeId: PostTypeEnum.LIVESTREAM }), variant: 'blackSecondary', size: 'sm' })
-        Streams
-      @end
+        @button({ href: route('studio.posts.index', { postTypeId: PostTypeEnum.LIVESTREAM }), variant: postTypeId == PostTypeEnum.LIVESTREAM ? 'baseSecondary' : 'blackSecondary', size: 'sm', className: 'rounded-none border-x border-slate-200' })
+          Streams
+        @end
 
-      @button({ href: route('studio.posts.index', { postTypeId: PostTypeEnum.NEWS }), variant: 'blackSecondary', size: 'sm' })
-        News
-      @end
+        @button({ href: route('studio.posts.index', { postTypeId: PostTypeEnum.NEWS }), variant: postTypeId == PostTypeEnum.NEWS ? 'baseSecondary' : 'blackSecondary', size: 'sm', className: 'rounded-l-none' })
+          News
+        @end
+      </div>
 
       @button({ href: route('studio.posts.create'), size: 'sm' })
         Create New Post
@@ -32,7 +34,7 @@
         { name: 'Author', field: 'author' },
         { name: 'Status', field: 'status' },
         { name: 'Type', field: 'type' },
-        { name: 'Views', field: 'view_count' },
+        { name: 'Views', field: 'viewCount' },
         { name: 'Publish Date', field: 'publish_at' },
         { name: '', field: '_actions' }
       ]
@@ -69,6 +71,8 @@
           <div class="text-xs text-gray-800">
             {{ scope.row.publishAt.toFormat('fff') }}
           </div>
+        @elseif (scope.column.field === 'viewCount')
+          <span class="text-sm">{{ scope.row.viewCount.toLocaleString('en-US') }}</span>
         @elseif (scope.column.field === '_actions')
           <div class="flex text-sm">
             <a href="{{ route('studio.posts.edit', { id: scope.row.id }) }}" class="text-gray-950 hover:text-brand-800 mr-3">

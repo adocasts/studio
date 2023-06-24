@@ -18,14 +18,16 @@ export default class PostsController {
   public async index({ request, view, auth, bouncer, params }: HttpContextContract) {
     await bouncer.with('StudioPolicy').authorize('viewPosts')
 
+    const { pattern } = request.qs()
     const page = request.input('page', 1)
     const posts = await auth.user!.related('posts').query()
       .if(params.postTypeId, query => query.where('postTypeId', params.postTypeId))
+      .if(pattern, query => query.where('title', 'ILIKE', `%${pattern}%`))
       .preload('authors')
       .orderBy('publishAt', 'desc')
-      .paginate(page, 20)
+      .paginate(page, 100)
 
-    posts.baseUrl(Route.makeUrl('studio.posts.index'))
+    posts.baseUrl(Route.makeUrl('studio.posts.index', { postTypeId: params.postTypeId }))
 
     let heading = 'Posts'
     switch (params.postTypeId) {
@@ -40,7 +42,7 @@ export default class PostsController {
         break;
     }
 
-    return view.render('studio/posts/index', { posts, heading })
+    return view.render('studio/posts/index', { posts, heading, postTypeId: params.postTypeId })
   }
 
   public async create({ view, bouncer, auth }: HttpContextContract) {
