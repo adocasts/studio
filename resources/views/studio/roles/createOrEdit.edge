@@ -1,0 +1,54 @@
+@layout('layouts/studio')
+
+@section('heading')
+  @studio.heading({
+    heading: role?.id ? 'Update Role' : 'Create New Role',
+    wrapSlot: true
+  })
+    <div class="space-x-3">
+      @button({ type: 'submit', form: 'roleForm' })
+        Save
+      @end
+    </div>
+  @end
+@endsection
+
+@section('content')
+
+  @set('action', route('studio.users.roles.store'))
+
+  @if(role?.id)
+    @set('action', route('studio.users.roles.update', { id: role.id }, { qs: { _method: 'PUT' }}))
+  @endif
+
+  <form id="roleForm" name="roleForm" method="POST" action="{{ action }}">
+    {{ csrfField() }}
+
+    <div class="flex flex-wrap -mx-3">
+      <div class="w-full lg:w-2/3 lg:px-3">
+        @!form.input.alt({
+          label: 'Name',
+          name: 'name',
+          placeholder: 'Enter a concise & descriptive name',
+          value: flashMessages.get('name') ?? role?.name ?? '',
+          errors: flashMessages.get('errors.name'),
+          required: true,
+          max: 100,
+          title: true
+        })
+
+        @!form.input.alt({
+          type: 'textarea',
+          label: 'Description',
+          name: 'description',
+          placeholder: 'Enter a high-level overview of the role',
+          value: flashMessages.get('description') ?? role?.description ?? '',
+          errors: flashMessages.get('errors.description'),
+          rows: 3
+        })
+        
+      </div>
+    </div>
+  </form>
+
+@endsection

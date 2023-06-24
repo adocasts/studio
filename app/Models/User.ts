@@ -66,6 +66,12 @@ class User extends AppBaseModel {
   @column()
   public theme: string = Themes.SYSTEM
 
+  @column()
+  public emailVerified: string | null
+
+  @column.dateTime()
+  public emailVerifiedAt: DateTime | null
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -90,6 +96,17 @@ class User extends AppBaseModel {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }
+  }
+
+  @computed()
+  public get isEmailVerified() {
+    // has gone through verification flow
+    if (this.emailVerified == this.email && this.emailVerifiedAt) return true
+    
+    // using third-party social auth
+    if (this.email == this.githubEmail || this.email == this.googleEmail) return true
+
+    return false
   }
 
   @belongsTo(() => Role)

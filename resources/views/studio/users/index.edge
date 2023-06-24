@@ -1,0 +1,56 @@
+@layout('layouts/studio')
+
+@section('heading')
+  @!studio.heading({ heading: 'Users' })
+@endsection
+
+@section('content')
+
+  <div class="-m-6">
+    @table.base({
+      data: users,
+      columns: [
+        { name: 'Id', field: 'id' },
+        { name: 'Username', field: 'username' },
+        { name: 'Email', field: 'email' },
+        { name: 'Email Verified', field: 'isEmailVerified' },
+        { name: 'Created At', field: 'createdAt' },
+        { name: 'Updated At', field: 'updatedAt' },
+        { name: '', field: '_actions' }
+      ]
+    })
+      @slot('tableData', scope)
+        @if (scope.column.field === 'username')
+          <div class="text-sm leading-5 font-medium">
+            <a href="{{ route('studio.users.show', { id: scope.row.id }) }}" class="hover:underline text-gray-950">
+              {{ scope.row.username }}
+            </a>
+          </div>
+        @elseif (scope.column.field === 'createdAt')
+          <div class="text-sm">
+            {{ scope.row.createdAt.toFormat('fff') }}
+          </div>
+        @elseif (scope.column.field === 'updatedAt')
+          <div class="text-sm">
+            {{ scope.row.updatedAt.toFormat('fff') }}
+          </div>
+        @elseif (scope.column.field === '_actions')
+          {{--  <div class="flex text-sm">
+            <a href="{{ route('studio.posts.edit', { id: scope.row.id }) }}" class="text-gray-950 hover:text-brand-800 mr-3">
+              Edit
+            </a>
+            <form method="POST" action="{{ route('studio.posts.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}">
+              {{ csrfField() }}
+              <button type="submit" class="text-red-800 hover:text-red-900">
+                Delete
+              </button>
+            </form>
+          </div>  --}}
+        @else
+          <span class="text-sm">{{ scope.row[scope.column.field] }}</span>
+        @endif
+      @endslot
+    @end
+  </div>
+
+@endsection

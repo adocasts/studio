@@ -86,6 +86,25 @@ Route.group(() => {
 
   Route.group(() => {
 
+    Route.get('/', 'UsersController.index').as('index')
+    Route.get('/:id', 'UsersController.show').as('show').where('id', Route.matchers.number())
+    Route.patch('/:id/role', 'UsersController.role').as('role').where('id', Route.matchers.number())
+    
+    Route.group(() => {
+
+      Route.get('/', 'RolesController.index').as('index')
+      Route.get('/:id', 'RolesController.show').as('show')
+      Route.get('/create', 'RolesController.create').as('create')
+      Route.post('/', 'RolesController.store').as('store')
+      Route.get('/:id/edit', 'RolesController.edit').as('edit')
+      Route.put('/:id', 'RolesController.update').as('update')
+    
+    }).prefix('/roles').as('roles')
+
+  }).prefix('/users').as('users').middleware(['role:admin'])
+
+  Route.group(() => {
+
     Route.get('/', 'SettingsController.index').as('index')
     Route.patch('/username', 'SettingsController.usernameUpdate').as('username.update')
     Route.post('/username/unique', 'SettingsController.usernameUnique').as('username.unique')

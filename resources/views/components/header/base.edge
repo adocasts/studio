@@ -7,7 +7,9 @@
   Nav('Collections', route('studio.collections.index'), 'StudioPolicy.viewCollections'),
   Nav('Taxonomies', route('studio.taxonomies.index'), 'StudioPolicy.viewTaxonomies'),
   Nav('Comments', route('studio.comments.index'), 'StudioPolicy.viewComments'),
-  Nav('Settings', route('studio.settings.index'), 'StudioPolicy.viewSettings')
+  Nav('Settings', route('studio.settings.index'), 'StudioPolicy.viewSettings'),
+  Nav('Users', route('studio.users.index'), 'StudioPolicy.viewUsers'),
+  Nav('Roles', route('studio.users.roles.index'), 'StudioPolicy.adminOnly'),
 ])
 
 <div x-data="{
