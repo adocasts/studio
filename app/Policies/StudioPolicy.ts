@@ -13,8 +13,8 @@ export default class StudioPolicy extends BasePolicy {
 		return false
 	}
 
-	public async viewDashboard(_: User) {
-		return false
+	public async viewDashboard(user: User) {
+		return this.canContribute(user)
 	}
 
 	public async viewPosts(_: User) {

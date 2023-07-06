@@ -57,8 +57,10 @@
           label: 'Slug',
           name: 'slug',
           placeholder: 'Enter a unique url safe identifier',
+          help: 'Will auto generate from title if left empty',
           value: flashMessages.get('slug') ?? post?.slug ?? '',
-          errors: flashMessages.get('errors.slug')
+          errors: flashMessages.get('errors.slug'),
+          max: 255
         })
 
         @!form.input.alt({
@@ -68,12 +70,14 @@
           placeholder: 'Enter a high-level overview of your post',
           value: flashMessages.get('description') ?? post?.description ?? '',
           errors: flashMessages.get('errors.description'),
-          rows: 3
+          rows: 3,
+          max: 255
         })
 
         @form.input.alt({
           type: 'group',
-          label: 'Publish At'
+          label: 'Publish At',
+          help: 'Will default to now if left empty'
         })
           @slot('input')
             <div class="flex items-center">
@@ -107,7 +111,7 @@
           <option value="{{ postTypes.BLOG }}">Blog</option>
           <option value="{{ postTypes.NEWS }}">News</option>
           <option value="{{ postTypes.LIVESTREAM }}">Livestream</option>
-          <option value="{{ postTypes.LINK }}">Link</option>
+          {{--  <option value="{{ postTypes.LINK }}">Link</option>  --}}
         @end
 
         <details class="mb-6">
@@ -128,7 +132,8 @@
             placeholder: 'Enter a SEO friendly description. Defaults to the summary when left empty.',
             value: flashMessages.get('metaDescription') ?? post?.metaDescription ?? '',
             errors: flashMessages.get('errors.metaDescription'),
-            rows: 3
+            rows: 3,
+            max: 255
           })
 
           @!form.input({
@@ -143,7 +148,8 @@
         @!form.input.alt({
           label: 'Repository Url',
           name: 'repositoryUrl',
-          placeholder: 'Enter the URL to lesson repo',
+          help: 'Have code associated with this post? Provide the repository url here',
+          placeholder: 'Enter the URL to lesson repository',
           value: flashMessages.get('repositoryUrl') ?? post?.repositoryUrl ?? '',
           errors: flashMessages.get('errors.repositoryUrl')
         })
@@ -152,6 +158,7 @@
           type: 'group',
           label: 'Body',
           name: 'body',
+          help: 'Type / to see command pallete',
           errors: flashMessages.get('errors.body') ?? flashMessages.get('errors.bodyBlocks')
         })
           @slot('input')
@@ -175,6 +182,7 @@
         @form.input.alt({
           type: 'select',
           label: 'Library Image',
+          help: 'Is your image already uploaded? You can find & reuse it here',
           name: 'libraryAssetId'
         })
           <option value="">-- Select from library --</option>
@@ -211,13 +219,14 @@
         @!form.input.alt({
           label: 'Video Length (in seconds)',
           name: 'videoSeconds',
+          help: 'Will auto populate if your video is public',
           placeholder: 'Enter length of video in seconds',
           value: flashMessages.get('videoSeconds') ?? post?.videoSeconds ?? '',
           errors: flashMessages.get('errors.videoSeconds')
         })
 
         <details class="my-6" {{{ flashMessages.get('livestreamUrl') || post?.livestreamUrl ? 'open' : '' }}}>
-          <summary class="pb-3">Livestream</summary>
+          <summary class="pb-3 cursor-pointer">Livestream</summary>
 
           @form.input.alt({
             type: 'group',
@@ -260,7 +269,8 @@
 
         @form.input.alt({
           type: 'group',
-          label: 'Taxonomy'
+          label: 'Taxonomy',
+          help: 'What topics does this post fall under?'
         })
           @slot('input')
             @set('selectedTaxonomyIds', post?.taxonomies.map(t => t.id) ?? [])

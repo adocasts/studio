@@ -16,7 +16,7 @@ import AssetTypes from 'App/Enums/AssetTypes'
 export default class PostsController {
 
   public async index({ request, view, auth, bouncer, params }: HttpContextContract) {
-    await bouncer.with('StudioPolicy').authorize('viewPosts')
+    await bouncer.with('PostPolicy').authorize('viewList')
 
     const { pattern } = request.qs()
     const page = request.input('page', 1)

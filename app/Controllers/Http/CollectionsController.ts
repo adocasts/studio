@@ -10,9 +10,11 @@ import CollectionService from 'App/Services/CollectionService'
 import TaxonomyService from 'App/Services/TaxonomyService'
 
 export default class CollectionsController {
-  public async index ({ view, request, auth }: HttpContextContract) {
+  public async index ({ view, request, auth, bouncer }: HttpContextContract) {
+    await bouncer.with('CollectionPolicy').authorize('viewList')
+
     const page = request.input('page', 1)
-    const collections = await auth.user!.related('collections').query()
+    const collections = await Collection.query()
       .preload('children', query => query.withCount('posts').select('id'))
       .withCount('posts')
       .whereNull('parentId')
@@ -30,26 +32,35 @@ export default class CollectionsController {
     return view.render('studio/collections/index', { collections, collectionCounts })
   }
 
-  public async create ({ view }: HttpContextContract) {
+  public async create ({ view, bouncer }: HttpContextContract) {
+    await bouncer.with('CollectionPolicy').authorize('create')
+
     const states = State
     const statuses = Status
     const collectionTypes = CollectionType
     const taxonomies = await TaxonomyService.getAllForTree()
     const collections = await Collection.query().whereNull('parentId').select('id', 'name').orderBy('name')
+
     return view.render('studio/collections/createOrEdit', { states, statuses, collectionTypes, taxonomies, collections })
   }
 
-  public async store ({ request, response, session, auth }: HttpContextContract) {
+  public async store ({ request, response, session, auth, bouncer }: HttpContextContract) {
+    await bouncer.with('CollectionPolicy').authorize('create')
+    
+    let collection = await Collection.firstOrNewById(undefined)
+    
     const data = await request.validate(CollectionValidator)
-
-    const collection = await CollectionService.updateOrCreate(undefined, { ...data, ownerId: auth.user!.id })
+    
+    collection = await CollectionService.updateOrCreate(collection, { ...data, ownerId: auth.user!.id })
 
     session.flash('success', "Your collection has been created")
 
     return response.redirect().toRoute('studio.collections.edit', { id: collection.id })
   }
 
-  public async stub ({ request, response, auth }: HttpContextContract) {
+  public async stub ({ request, response, auth, bouncer }: HttpContextContract) {
+    await bouncer.with('CollectionPolicy').authorize('create')
+    
     const data = await request.validate({
       schema: schema.create({
         parentId: schema.number([rules.exists({ table: 'collections', column: 'id' })])
@@ -64,8 +75,11 @@ export default class CollectionsController {
   public async show ({}: HttpContextContract) {
   }
 
-  public async edit ({ view, params }: HttpContextContract) {
+  public async edit ({ view, params, bouncer }: HttpContextContract) {
     const collection = await Collection.findOrFail(params.id)
+
+    await bouncer.with('CollectionPolicy').authorize('update', collection)
+
     const states = State
     const statuses = Status
     const collectionTypes = CollectionType
@@ -89,15 +103,24 @@ export default class CollectionsController {
     return view.render('studio/collections/createOrEdit', { collection, collections, children, states, statuses, collectionTypes, taxonomies })
   }
 
-  public async update ({ request, response, params }: HttpContextContract) {
-    const data = await request.validate(CollectionValidator)
+  public async update ({ request, response, params, bouncer }: HttpContextContract) {
+    const collection = await Collection.firstOrNewById(params.id)
 
-    await CollectionService.updateOrCreate(params.id, data)
+    await bouncer.with('CollectionPolicy').authorize('update', collection)
+
+    const data = await request.validate(CollectionValidator)
+    const isOwner = await bouncer.with('CollectionPolicy').allows('isOwner', collection)
+
+    await CollectionService.updateOrCreate(collection, data, isOwner)
 
     return response.redirect().toRoute('studio.collections.index')
   }
 
-  public async destroy ({ request, response, params }: HttpContextContract) {
+  public async destroy ({ request, response, params, bouncer }: HttpContextContract) {
+    const _collection = await Collection.findOrFail(params.id)
+
+    await bouncer.with('CollectionPolicy').authorize('delete', _collection)
+
     const collection = await CollectionService.delete(params.id)
 
     if (request.accepts(['json'])) {

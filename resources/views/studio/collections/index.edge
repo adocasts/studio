@@ -29,7 +29,7 @@
             </a>
           </div>
           <div class="text-sm leading-5">
-            <a href="/collections/{{ scope.row.slug }}" target="_blank" class="hover:underline text-gray-800">
+            <a href="https://adocasts.com/series/{{ scope.row.slug }}" target="_blank" class="hover:underline text-gray-800">
               {{ scope.row.slug }}
             </a>
           </div>
@@ -61,12 +61,14 @@
             <a href="{{ route('studio.collections.edit', { id: scope.row.id }) }}" class="text-gray-950 hover:text-brand-800 mr-3">
               Edit
             </a>
-            <form method="POST" action="{{ route('studio.collections.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}">
-              {{ csrfField() }}
-              <button type="submit" class="text-red-800 hover:text-red-900">
-                Delete
-              </button>
-            </form>
+            @can('CollectionPolicy.delete', scope.row)
+              <form method="POST" action="{{ route('studio.collections.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}">
+                {{ csrfField() }}
+                <button type="submit" class="text-red-800 hover:text-red-900">
+                  Delete
+                </button>
+              </form>
+            @endcan
           </div>
         @else
           <span class="text-sm">{{ scope.row[scope.column.field] }}</span>

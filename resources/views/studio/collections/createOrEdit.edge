@@ -1,28 +1,42 @@
 @layout('layouts/studio')
+@set('isOwner', !collection ? true : collection.ownerId === auth.user.id || auth.user.isAdmin)
 
 @section('heading')
   @studio.heading({
     heading: collection?.id ? 'Update Collection' : 'Create New Collection',
     wrapSlot: true
   })
-    <div class="space-x-3">
-      @button({ onClick: `saveAs(${states.PUBLIC})`, id: 'btnPublish' })
-        Save
-      @end
+    <div class="flex flex-col -mt-6">
+      @if (!isOwner)
+        <div class="mb-6 px-3 py-1.5 rounded bg-orange-800 text-orange-100 text-sm">
+          <strong>Limited Access &mdash;</strong>
+          Access is limited to managing lessons for this collection. Collection details are restricted to collection owners.
+        </div>
+      @endif
+      <div class="space-x-3">
+        @if (isOwner)
+          @button({ onClick: `saveAs(${states.PUBLIC})`, id: 'btnPublish' })
+            Save
+          @end
 
-      @button({ onClick: `saveAs(${states.UNLISTED})`, variant: 'baseSecondary' })
-        Save As Unlisted
-      @end
+          @button({ onClick: `saveAs(${states.UNLISTED})`, variant: 'baseSecondary' })
+            Save As Unlisted
+          @end
 
-      @button({ onClick: `saveAs(${states.PRIVATE})`, variant: 'baseSecondary' })
-        Save As Private
-      @end
+          @button({ onClick: `saveAs(${states.PRIVATE})`, variant: 'baseSecondary' })
+            Save As Private
+          @end
+        @else
+          @button({ onClick: `saveAs(${collection.stateId})`, id: 'btnPublish' })
+            Save
+          @end
+        @endif
+      </div>
     </div>
   @end
 @endsection
 
 @section('content')
-
   @set('action', route('studio.collections.store'))
 
   @if(collection?.id)
@@ -43,7 +57,8 @@
           errors: flashMessages.get('errors.name'),
           required: true,
           max: 100,
-          title: true
+          title: true,
+          readonly: !isOwner
         })
 
         @!form.input.alt({
@@ -51,7 +66,8 @@
           name: 'slug',
           placeholder: 'Enter a unique url safe identifier',
           value: flashMessages.get('slug') ?? collection?.slug ?? '',
-          errors: flashMessages.get('errors.slug')
+          errors: flashMessages.get('errors.slug'),
+          readonly: !isOwner
         })
 
         @!form.input.alt({
@@ -61,7 +77,8 @@
           placeholder: 'Enter a high-level overview of your collection',
           value: flashMessages.get('description') ?? collection?.description ?? '',
           errors: flashMessages.get('errors.description'),
-          rows: 3
+          rows: 3,
+          readonly: !isOwner
         })
 
         <details class="mb-6">
@@ -72,7 +89,8 @@
             name: 'pageTitle',
             placeholder: 'Enter a concise SEO friendly page title. Defaults to the title when left empty',
             value: flashMessages.get('pageTitle') ?? collection?.pageTitle ?? '',
-            errors: flashMessages.get('errors.pageTitle')
+            errors: flashMessages.get('errors.pageTitle'),
+            readonly: !isOwner
           })
 
           @!form.input({
@@ -82,7 +100,8 @@
             placeholder: 'Enter a SEO friendly description. Defaults to the summary when left empty.',
             value: flashMessages.get('metaDescription') ?? collection?.metaDescription ?? '',
             errors: flashMessages.get('errors.metaDescription'),
-            rows: 3
+            rows: 3,
+            readonly: !isOwner
           })
         </details>
 
@@ -91,7 +110,8 @@
           label: 'Status',
           name: 'statusId',
           value: flashMessages.get('statusId') ?? collection?.statusId ?? statuses.IN_PROGRESS,
-          errors: flashMessages.get('errors.statusId')
+          errors: flashMessages.get('errors.statusId'),
+          readonly: !isOwner
         })
           <option value="{{ statuses.IN_PROGRESS }}">In-Progress</option>
           <option value="{{ statuses.COMPLETE }}">Completed</option>
@@ -104,7 +124,8 @@
           label: 'Type',
           name: 'collectionTypeId',
           value: flashMessages.get('collectionTypeId') ?? collection?.collectionTypeId ?? collectionTypes.SERIES,
-          errors: flashMessages.get('errors.collectionTypeId')
+          errors: flashMessages.get('errors.collectionTypeId'),
+          readonly: !isOwner
         })
           <option value="{{ collectionTypes.SERIES }}">Series</option>
           <option value="{{ collectionTypes.COURSE }}">Course</option>
@@ -116,7 +137,8 @@
           label: 'Updated Version Of',
           name: 'outdatedVersionId',
           value: flashMessages.get('outdatedVersionId') ?? collection?.outdatedVersionId,
-          errors: flashMessages.get('errors.outdatedVersionId')
+          errors: flashMessages.get('errors.outdatedVersionId'),
+          readonly: !isOwner
         })
           <option value="">None</option>
           @each (item in collections)
@@ -130,7 +152,8 @@
           @slot('input')
             @!form.file.manager({
               assets: [collection?.asset].filter(Boolean),
-              placeholder: 'Select and image'
+              placeholder: 'Select and image',
+              readonly: !isOwner
             })
           @endslot
         @end
@@ -140,7 +163,8 @@
           name: 'youtubePlaylistUrl',
           placeholder: 'Enter the url for the series YouTube playlist',
           value: flashMessages.get('youtubePlaylistUrl') ?? collection?.youtubePlaylistUrl ?? '',
-          errors: flashMessages.get('errors.slug')
+          errors: flashMessages.get('errors.slug'),
+          readonly: !isOwner
         })
 
         @!form.input.alt({
@@ -148,10 +172,12 @@
           name: 'repositoryUrl',
           placeholder: 'Enter the URL to the collection repo',
           value: flashMessages.get('repositoryUrl') ?? collection?.repositoryUrl ?? '',
-          errors: flashMessages.get('errors.repositoryUrl')
+          errors: flashMessages.get('errors.repositoryUrl'),
+          readonly: !isOwner
         })
 
-        @form.input.alt({
+        @can('CollectionPolicy.feature')
+          @form.input.alt({
           type: 'group',
           label: 'Feature',
           name: 'isFeatured',
@@ -165,38 +191,41 @@
             </label>
           @endslot
         @end
+        @endcan
 
-        @form.input.alt({
-          type: 'group',
-          label: 'Taxonomy'
-        })
-          @slot('input')
-            @set('selectedTaxonomyIds', collection?.taxonomies.map(t => t.id) ?? [])
-            @set('parentIds', [])
+        @can('CollectionPolicy.isOwner', collection)
+          @form.input.alt({
+            type: 'group',
+            label: 'Taxonomy'
+          })
+            @slot('input')
+              @set('selectedTaxonomyIds', collection?.taxonomies.map(t => t.id) ?? [])
+              @set('parentIds', [])
 
-            <div class="-mx-6">
-              @tree.base({ nodes: taxonomies, className: 'pl-6 border-l border-grey-300' })
-                @slot('main', scope)
-                  @set('parentIds', scope.node.parentId ? [...parentIds, scope.node.parentId] : [])
+              <div class="-mx-6">
+                @tree.base({ nodes: taxonomies, className: 'pl-6 border-l border-grey-300' })
+                  @slot('main', scope)
+                    @set('parentIds', scope.node.parentId ? [...parentIds, scope.node.parentId] : [])
 
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="taxonomyIds[]"
-                      value="{{ scope.node.id }}"
-                      class="mr-2"
-                      data-parent-ids="{{ [...new Set(parentIds)].join(',') }},"
-                      onchange="toggleParents(this)"
-                      {{ selectedTaxonomyIds.includes(scope.node.id) ? 'checked=checked' : '' }}
-                    />
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        name="taxonomyIds[]"
+                        value="{{ scope.node.id }}"
+                        class="mr-2"
+                        data-parent-ids="{{ [...new Set(parentIds)].join(',') }},"
+                        onchange="toggleParents(this)"
+                        {{ selectedTaxonomyIds.includes(scope.node.id) ? 'checked=checked' : '' }}
+                      />
 
-                    <span>{{ scope.node.name }}</span>
-                  </label>
-                @endslot
-              @end
-            </div>
-          @endslot
-        @end
+                      <span>{{ scope.node.name }}</span>
+                    </label>
+                  @endslot
+                @end
+              </div>
+            @endslot
+          @end
+        @endcan
       </div>
 
       <div class="w-full lg:w-1/3 lg:px-3 -my-3 p-6 shadow-inner bg-gray-50 rounded-lg">

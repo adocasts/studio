@@ -9,13 +9,17 @@ export default class PostPolicy extends BasePolicy {
 		}
 	}
 
+	public async viewList(user: User) {
+		return this.canContribute(user)
+	}
+
 	public async view(user: User, post: Post) {
     const isOwner = await this.isOwner(user, post)
     return isOwner || post.isViewable
 	}
 
 	public async store(user: User) {
-    return this.isAdmin(user)
+    return this.canContribute(user)
 	}
 
 	public async update(user: User, post: Post) {

@@ -11,7 +11,7 @@
       <img class="h-8 w-8 rounded-lg shadow-md shadow-black/5 ring-1 fill-brand-400 dark:fill-gray-800 ring-black/5 bg-brand-900 dark:bg-gray-50 dark:bg-opacity-10 dark:ring-inset dark:ring-white/5" src="{{ auth.user.avatar }}" />
     @endslot
 
-    @dropdown.item({ href: '#' })
+    @dropdown.item({ href: `https://adocasts.com/@${auth.user.username.toLowerCase()}` })
       {{ auth.user.username }}
     @end
 

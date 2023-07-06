@@ -1,14 +1,23 @@
 @layout('layouts/studio')
+@set('isOwner', !taxonomy ? true : taxonomy.ownerId === auth.user.id || auth.user.isAdmin)
 
 @section('heading')
   @studio.heading({
     heading: taxonomy?.id ? 'Update Taxonomy' : 'Create New Taxonomy',
     wrapSlot: true
   })
-    <div class="space-x-3">
-      @button({ type: 'submit', form: 'taxonomyForm' })
-        Save
-      @end
+  <div class="flex flex-col -mt-6">
+      @if (!isOwner)
+        <div class="mb-6 px-3 py-1.5 rounded bg-orange-800 text-orange-100 text-sm">
+          <strong>Limited Access &mdash;</strong>
+          Access is limited to managing lessons for this taxonomy. Taxonomy details are restricted to taxonomy owners.
+        </div>
+      @endif
+      <div class="space-x-3">
+        @button({ type: 'submit', form: 'taxonomyForm' })
+          Save
+        @end
+      </div>
     </div>
   @end
 @endsection
@@ -54,7 +63,8 @@
           errors: flashMessages.get('errors.name'),
           required: true,
           max: 100,
-          title: true
+          title: true,
+          readonly: !isOwner
         })
 
         @!form.input.alt({
@@ -62,7 +72,8 @@
           name: 'slug',
           placeholder: 'Enter a unique url safe identifier',
           value: flashMessages.get('slug') ?? taxonomy?.slug ?? '',
-          errors: flashMessages.get('errors.slug')
+          errors: flashMessages.get('errors.slug'),
+          readonly: !isOwner
         })
 
         @!form.input.alt({
@@ -72,7 +83,8 @@
           placeholder: 'Enter a high-level overview of your collection',
           value: flashMessages.get('description') ?? taxonomy?.description ?? '',
           errors: flashMessages.get('errors.description'),
-          rows: 3
+          rows: 3,
+          readonly: !isOwner
         })
 
         <details class="mb-6">
@@ -83,7 +95,8 @@
             name: 'pageTitle',
             placeholder: 'Enter a concise SEO friendly page title. Defaults to the title when left empty',
             value: flashMessages.get('pageTitle') ?? taxonomy?.pageTitle ?? '',
-            errors: flashMessages.get('errors.pageTitle')
+            errors: flashMessages.get('errors.pageTitle'),
+            readonly: !isOwner
           })
 
           @!form.input({
@@ -93,7 +106,8 @@
             placeholder: 'Enter a SEO friendly description. Defaults to the summary when left empty.',
             value: flashMessages.get('metaDescription') ?? taxonomy?.metaDescription ?? '',
             errors: flashMessages.get('errors.metaDescription'),
-            rows: 3
+            rows: 3,
+            readonly: !isOwner
           })
         </details>
 
@@ -101,25 +115,28 @@
           @slot('input')
             @!form.file.manager({
               assets: [taxonomy?.asset].filter(Boolean),
-              placeholder: 'Select and image'
+              placeholder: 'Select and image',
+              readonly: !isOwner
             })
           @endslot
         @end
 
-        @form.input.alt({
-          type: 'group',
-          label: 'Feature',
-          name: 'isFeatured',
-          errors: flashMessages.get('errors.isFeatured')
-        })
-          @slot('input')
-            @set('isChecked', flashMessages.get('isFeatured') ?? taxonomy?.isFeatured ?? false)
-            <label class="inline-flex items-center">
-              @!form.checkbox({ name: 'isFeatured', checked: isChecked })
-              Feature this taxonomy
-            </label>
-          @endslot
-        @end
+        @can('TaxonomyPolicy.feature')
+          @form.input.alt({
+            type: 'group',
+            label: 'Feature',
+            name: 'isFeatured',
+            errors: flashMessages.get('errors.isFeatured')
+          })
+            @slot('input')
+              @set('isChecked', flashMessages.get('isFeatured') ?? taxonomy?.isFeatured ?? false)
+              <label class="inline-flex items-center">
+                @!form.checkbox({ name: 'isFeatured', checked: isChecked })
+                Feature this taxonomy
+              </label>
+            @endslot
+          @end
+        @endcan
       </div>
 
       <div class="w-full lg:w-1/3 lg:px-3">

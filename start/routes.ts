@@ -46,7 +46,7 @@ Route.group(() => {
     Route.put('/:id',           'PostsController.update').as('update')
     Route.delete('/:id',        'PostsController.destroy').as('destroy')
 
-  }).prefix('/posts').as('posts').middleware(['role:admin'])
+  }).prefix('/posts').as('posts').middleware(['role:admin,contributor'])
 
   Route.group(() => {
 
@@ -57,7 +57,7 @@ Route.group(() => {
     Route.put('/:id',       'CollectionsController.update').as('update')
     Route.delete('/:id',    'CollectionsController.destroy').as('destroy')
 
-  }).prefix('/collections').as('collections').middleware(['role:admin'])
+  }).prefix('/collections').as('collections').middleware(['role:admin,contributor'])
 
   Route.group(() => {
 
@@ -68,7 +68,7 @@ Route.group(() => {
     Route.put('/:id',       'TaxonomiesController.update').as('update')
     Route.delete('/:id',    'TaxonomiesController.destroy').as('destroy')
 
-  }).prefix('/taxonomies').as('taxonomies').middleware(['role:admin'])
+  }).prefix('/taxonomies').as('taxonomies').middleware(['role:admin,contributor'])
 
   Route.group(() => {
 
@@ -134,7 +134,7 @@ Route.group(() => {
 
     Route.post('/collections/stub', 'CollectionsController.stub').as('collections.stub')
 
-  }).as('studio').middleware(['role:admin'])
+  }).as('studio').middleware(['role:admin,contributor'])
 
 }).prefix('/api').as('api').middleware(['auth'])
 

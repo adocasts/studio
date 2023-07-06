@@ -32,6 +32,7 @@
         class="
           {{ rightGutter }}
           w-full natural bg-transparent border-0 p-0 placeholder-gray-700 {{ title && 'font-semibold text-2xl' }}
+          {{ readonly && 'text-gray-600 cursor-not-allowed' }}
           {{ error
             ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
             : 'focus:ring-brand-500 focus:border-brand-500 border-gray-700'
@@ -62,13 +63,14 @@
         class="
           {{ rightGutter }}
           w-full natural bg-transparent border-0 p-0 placeholder-gray-700 {{ title && 'font-semibold text-2xl' }}
+          {{ readonly && 'text-gray-600 cursor-not-allowed' }}
           {{ error
             ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
             : 'focus:ring-brand-500 focus:border-brand-500 border-gray-700'
           }}
         "
         style="{{ style }}"
-        {{ readonly && 'readonly' }}
+        {{ readonly && 'readonly disabled' }}
         @focus="focused = true"
         @blur="focused = false">
         {{{ await $slots.main() }}}
@@ -81,6 +83,7 @@
         class="
           {{ rightGutter }}
           w-full natural bg-transparent border-0 p-0 placeholder-gray-700 {{ title && 'font-semibold text-2xl' }}
+          {{ readonly && 'text-gray-600 cursor-not-allowed' }}
           {{ error
             ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
             : 'focus:ring-brand-500 focus:border-brand-500 border-gray-700'
@@ -119,11 +122,11 @@
     @endif
 
     @if(max)
-      <p {{ cloak && 'x-cloak' }} x-show="value.length > max" class="absolute text-xs text-gray-800 absolute right-0 bottom-0">
+      <p {{ cloak && 'x-cloak' }} class="absolute text-xs text-gray-800 right-0 top-100">
         <span x-text="value.length"></span> of <span x-text="max"></span>
       </p>
     @elseif(min && !error)
-      <div {{ cloak && 'x-cloak' }} x-show="value.length < min" class="absolute text-xs text-gray-800 absolute right-0 bottom-0">
+      <div {{ cloak && 'x-cloak' }} class="absolute text-xs text-gray-800 right-0 bottom-0">
         <span x-text="min"></span> character minimum
       </div>
     @endif

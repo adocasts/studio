@@ -113,6 +113,20 @@ View.global('ipLocate', async (ip) => {
   return IdentityService.getLocation(ip)
 })
 
+View.global('secondsToTimestring', (totalSeconds: number | string) => {
+  if (typeof totalSeconds === 'string') {
+    totalSeconds = Number(totalSeconds)
+  }
+
+  const hours = Math.floor(totalSeconds / 3600);
+
+  totalSeconds %= 3600;
+
+  const minutes = Math.floor(totalSeconds / 60);
+
+  return `${hours}h ${minutes}m`
+})
+
 View.global('GA_PROPERTY', Env.get('GA_PROPERTY'))
 
 View.global('DateTime', DateTime)
