@@ -33,7 +33,7 @@ export default class StudioPolicy extends BasePolicy {
 		return this.isAuthenticated(user)
 	}
 
-	public async viewUsers(user: User) {
+	public async viewUsers(_user: User) {
 		return false
 	}
 

@@ -10,7 +10,7 @@ import CollectionService from 'App/Services/CollectionService'
 import TaxonomyService from 'App/Services/TaxonomyService'
 
 export default class CollectionsController {
-  public async index ({ view, request, auth, bouncer }: HttpContextContract) {
+  public async index ({ view, request, bouncer }: HttpContextContract) {
     await bouncer.with('CollectionPolicy').authorize('viewList')
 
     const page = request.input('page', 1)
@@ -51,7 +51,7 @@ export default class CollectionsController {
     
     const data = await request.validate(CollectionValidator)
     
-    collection = await CollectionService.updateOrCreate(collection, { ...data, ownerId: auth.user!.id })
+    collection = await CollectionService.updateOrCreate(collection, { ...data, ownerId: auth.user!.id }, true)
 
     session.flash('success', "Your collection has been created")
 
