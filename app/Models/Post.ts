@@ -332,6 +332,8 @@ export default class Post extends AppBaseModel {
         return `/news/${this.slug}`
       case PostType.LIVESTREAM:
         return `/streams/${this.slug}`
+      case PostType.SNIPPET:
+        return `/snippets/${this.slug}`
       default:
         return `/lessons/${this.slug}`
     }
@@ -397,6 +399,10 @@ export default class Post extends AppBaseModel {
 
   public static links() {
     return this.query().where('postTypeId', PostType.LINK)
+  }
+
+  public static snippets() {
+    return this.query().where('postTypeId', PostType.SNIPPET)
   }
 
   public static loadForDisplay() {
