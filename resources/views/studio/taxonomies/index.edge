@@ -24,25 +24,29 @@
             </div>
           </a>
           <div class="flex items-center opacity-0 group-hover:opacity-100 transition duration-300">
-            <div class="mr-3">
-              @button({ variant: 'blackSecondary', size: 'xs', href: route('studio.taxonomies.edit', { id: scope.node.id }), group: false })
-                @!svg.edit()
-                Edit
-              @end
-            </div>
-            <div class="mr-3">
-              @button({ variant: 'blackSecondary', size: 'xs', href: route('studio.taxonomies.create', {}, { qs: { rootParentId: rootParentId, parentId: scope.node.id }}), group: false })
-                @!svg.plus()
-                Add
-              @end
-            </div>
-            <form method="POST" action="{{ route('studio.taxonomies.destroy', { id: scope.node.id }, { qs: { _method: 'DELETE' }}) }}" onsubmit="return confirm(`If this taxonomy contains children, they'll be deleted too. Would you like to continue?`)">
-              {{ csrfField() }}
-              @button({ type: 'submit', variant: 'bad', size: 'xs' })
-                @!svg.delete()
-                Delete
-              @end
-            </form>
+            @can('TaxonomyPolicy.update', scope.node)
+              <div class="mr-3">
+                @button({ variant: 'blackSecondary', size: 'xs', href: route('studio.taxonomies.edit', { id: scope.node.id }), group: false })
+                  @!svg.edit()
+                  Edit
+                @end
+              </div>
+              <div class="mr-3">
+                @button({ variant: 'blackSecondary', size: 'xs', href: route('studio.taxonomies.create', {}, { qs: { rootParentId: rootParentId, parentId: scope.node.id }}), group: false })
+                  @!svg.plus()
+                  Add
+                @end
+              </div>
+            @endcan
+            @can('TaxonomyPolicy.delete', scope.node)
+              <form method="POST" action="{{ route('studio.taxonomies.destroy', { id: scope.node.id }, { qs: { _method: 'DELETE' }}) }}" onsubmit="return confirm(`If this taxonomy contains children, they'll be deleted too. Would you like to continue?`)">
+                {{ csrfField() }}
+                @button({ type: 'submit', variant: 'bad', size: 'xs' })
+                  @!svg.delete()
+                  Delete
+                @end
+              </form>
+            @endcan
           </div>
         </div>
       @endslot

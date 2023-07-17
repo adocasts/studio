@@ -77,7 +77,7 @@ export default class SettingsController {
     session.flash('success', 'Your email has been successfully reverted. Please resecure your account by changing your password.')
     return signedUrl
       ? response.redirect(signedUrl)
-      : response.redirect().toRoute('auth.password.forgot')
+      : response.redirect('https://adocasts.com/forgot-password')
   }
 
   public async usernameUpdate({ request, response, auth, session }: HttpContextContract) {

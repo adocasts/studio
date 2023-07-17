@@ -7,7 +7,7 @@
   Nav('Collections', route('studio.collections.index'), 'CollectionPolicy.viewList'),
   Nav('Taxonomies', route('studio.taxonomies.index'), 'TaxonomyPolicy.viewList'),
   Nav('Comments', route('studio.comments.index'), 'StudioPolicy.viewComments'),
-  Nav('Settings', route('studio.settings.index'), 'StudioPolicy.viewSettings'),
+  Nav('Settings', 'https://adocasts.com/users/settings', 'StudioPolicy.viewSettings'),
   Nav('Users', route('studio.users.index'), 'StudioPolicy.viewUsers'),
   Nav('Roles', route('studio.users.roles.index'), 'StudioPolicy.adminOnly'),
 ])

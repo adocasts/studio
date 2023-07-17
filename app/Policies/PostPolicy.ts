@@ -10,7 +10,7 @@ export default class PostPolicy extends BasePolicy {
 	}
 
 	public async viewList(user: User) {
-		return this.canContribute(user)
+		return this.isLvl1Contributor(user)
 	}
 
 	public async view(user: User, post: Post) {
@@ -19,7 +19,7 @@ export default class PostPolicy extends BasePolicy {
 	}
 
 	public async store(user: User) {
-    return this.canContribute(user)
+    return this.isLvl1Contributor(user)
 	}
 
 	public async update(user: User, post: Post) {

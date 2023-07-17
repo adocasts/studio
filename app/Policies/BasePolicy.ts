@@ -7,8 +7,12 @@ export default class BasePolicy extends BouncerBasePolicy {
 		return user?.roleId === Role.ADMIN
 	}
 
-	protected canContribute(user: User | null) {
-		return this.isAdmin(user) || user?.roleId === Role.CONTRIBUTOR
+	protected isLvl1Contributor(user: User | null) {
+		return this.isAdmin(user) || user?.roleId === Role.CONTRIBUTOR_LVL_1 || user?.roleId === Role.CONTRIBUTOR_LVL_2
+	}
+
+	protected isLvl2Contributor(user: User | null) {
+		return this.isAdmin(user) || user?.roleId === Role.CONTRIBUTOR_LVL_2
 	}
 
 	protected isAuthenticated(user: User | null) {

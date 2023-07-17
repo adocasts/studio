@@ -1,0 +1,29 @@
+@set('title', 'You\'ve gained new super powers at Adocasts')
+
+@layout('emails/layouts/transactional')
+
+@section('content')
+
+  @emails.paragraph()
+    Hi {{ user.username }},
+  @end
+
+  @emails.paragraph({ style: 'text-transform: capitalize;' })
+    You've gained new super powers at Adocasts!
+  @end
+
+  @emails.paragraph()
+    Your role has been updated from {{ oldRole.name }} to {{ newRole.name }}.
+    With this role we're entrusting you with full access to <a href="https://studio.adocasts.com">the Adocasts Studio</a>.
+    We trust you know what you should and shouldn't do via this digital handshake 🤝.
+  @end
+
+  @emails.paragraph()
+    Althrough your admin powers give you full access to our content creation system, we can also enter and schedule your content! 
+    If you wish for us to enter your content, you can share the content's details 
+    within a Notion (or similar) document with tom@adocasts.com at least 48 hours prior to the desired scheduled publication.
+  @end
+  
+  @!emails.signature()
+
+@endsection

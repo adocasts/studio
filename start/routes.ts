@@ -46,7 +46,7 @@ Route.group(() => {
     Route.put('/:id',           'PostsController.update').as('update')
     Route.delete('/:id',        'PostsController.destroy').as('destroy')
 
-  }).prefix('/posts').as('posts').middleware(['role:admin,contributor'])
+  }).prefix('/posts').as('posts').middleware(['role:admin,contributor_lvl_1,contributor_lvl_2'])
 
   Route.group(() => {
 
@@ -57,7 +57,7 @@ Route.group(() => {
     Route.put('/:id',       'CollectionsController.update').as('update')
     Route.delete('/:id',    'CollectionsController.destroy').as('destroy')
 
-  }).prefix('/collections').as('collections').middleware(['role:admin,contributor'])
+  }).prefix('/collections').as('collections').middleware(['role:admin,contributor_lvl_2'])
 
   Route.group(() => {
 
@@ -68,7 +68,7 @@ Route.group(() => {
     Route.put('/:id',       'TaxonomiesController.update').as('update')
     Route.delete('/:id',    'TaxonomiesController.destroy').as('destroy')
 
-  }).prefix('/taxonomies').as('taxonomies').middleware(['role:admin,contributor'])
+  }).prefix('/taxonomies').as('taxonomies').middleware(['role:admin,contributor_lvl_2'])
 
   Route.group(() => {
 
@@ -122,9 +122,9 @@ Route.group(() => {
 // API
 Route.group(() => {
 
-  Route.post('/studio/assets', 'AssetsController.store').as('studio.assets.store').middleware(['role:admin'])
-  Route.delete('/studio/assets/:id', 'AssetsController.destroy').as('studio.assets.destroy').middleware(['role:admin'])
-  Route.post('/studio/editor/assets', 'AssetsController.store').as('studio.editor.asset').middleware(['role:admin'])
+  Route.post('/studio/assets', 'AssetsController.store').as('studio.assets.store').middleware(['role:admin,contributor_lvl_1,contributor_lvl_2'])
+  Route.delete('/studio/assets/:id', 'AssetsController.destroy').as('studio.assets.destroy').middleware(['role:admin,contributor_lvl_1,contributor_lvl_2'])
+  Route.post('/studio/editor/assets', 'AssetsController.store').as('studio.editor.asset').middleware(['role:admin,contributor_lvl_1,contributor_lvl_2'])
 
   Route.post('/notifications/read', 'NotificationsController.read').as('notifications.read')
 
@@ -134,7 +134,7 @@ Route.group(() => {
 
     Route.post('/collections/stub', 'CollectionsController.stub').as('collections.stub')
 
-  }).as('studio').middleware(['role:admin,contributor'])
+  }).as('studio').middleware(['role:admin,contributor_lvl_2'])
 
 }).prefix('/api').as('api').middleware(['auth'])
 

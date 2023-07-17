@@ -62,7 +62,7 @@ export default class SettingService {
       return {
         success: false,
         message: "You've exceeded the maximum number of password attempts allowed. Please reset your password.",
-        redirect: Route.makeUrl('auth.password.forgot')
+        redirect: 'https://adocasts.com/forgot-password'
       }
     }
 

@@ -20,7 +20,9 @@
     "./start/kernel",
     "./start/bouncer",
     "./start/events",
-    "./start/globals"
+    "./start/globals",
+    "./start/events/role",
+    "./start/events/auth"
   ],
   "providers": [
     "./providers/AppProvider",

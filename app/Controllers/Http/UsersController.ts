@@ -2,7 +2,10 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import Route from '@ioc:Adonis/Core/Route'
 import Role from 'App/Models/Role'
+import RoleEnum from 'App/Enums/Roles'
 import UserRoleValidator from 'App/Validators/UserRoleValidator'
+import Event from '@ioc:Adonis/Core/Event'
+import UserService from 'App/Services/UserService'
 
 export default class UsersController {
   public async index({ view, request, bouncer }: HttpContextContract) {
@@ -42,10 +45,14 @@ export default class UsersController {
 
     const data = await request.validate(UserRoleValidator)
     const user = await User.findOrFail(params.id)
+    const oldRole = await user.related('role').query().firstOrFail()
+    const newRole = await Role.findOrFail(data.roleId)
 
     await user.merge(data).save()
 
     session.flash('success', 'Role updated successfully')
+
+    await UserService.sendRoleUpdateNotification(user, newRole, oldRole)
 
     return response.redirect().toRoute('studio.users.show', { id: params.id })
   }

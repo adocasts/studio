@@ -10,11 +10,11 @@ export default class CollectionPolicy extends BasePolicy {
 	}
 	
 	public async viewList(user: User) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 	
 	public async view(user: User, _collection: Collection) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 
 	public async feature(_user: User) {
@@ -22,11 +22,11 @@ export default class CollectionPolicy extends BasePolicy {
 	}
 	
 	public async create(user: User) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 	
 	public async update(user: User, _collection: Collection) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 	
 	public async delete(user: User, collection: Collection) {
@@ -34,7 +34,7 @@ export default class CollectionPolicy extends BasePolicy {
 	}
 
 	public async isOwner(user: User, collection: Collection) {
-		if (!collection) return this.canContribute(user)
+		if (!collection) return this.isLvl2Contributor(user)
 		return collection.ownerId === user.id
   }
 }

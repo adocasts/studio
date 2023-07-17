@@ -14,7 +14,7 @@ export default class StudioPolicy extends BasePolicy {
 	}
 
 	public async viewDashboard(user: User) {
-		return this.canContribute(user)
+		return this.isLvl1Contributor(user)
 	}
 
 	public async viewPosts(_: User) {

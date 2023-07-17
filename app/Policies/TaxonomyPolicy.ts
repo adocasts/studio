@@ -10,11 +10,11 @@ export default class TaxonomyPolicy extends BasePolicy {
 	}
 	
 	public async viewList(user: User) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 	
 	public async view(user: User, _taxonomy: Taxonomy) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 
 	public async feature(_user: User) {
@@ -22,11 +22,11 @@ export default class TaxonomyPolicy extends BasePolicy {
 	}
 	
 	public async create(user: User) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 	
 	public async update(user: User, _taxonomy: Taxonomy) {
-		return this.canContribute(user)
+		return this.isLvl2Contributor(user)
 	}
 	
 	public async delete(user: User, taxonomy: Taxonomy) {
@@ -34,7 +34,7 @@ export default class TaxonomyPolicy extends BasePolicy {
 	}
 
 	public async isOwner(user: User, taxonomy: Taxonomy) {
-		if (!taxonomy) return this.canContribute(user)
+		if (!taxonomy) return this.isLvl2Contributor(user)
 		return taxonomy.ownerId === user.id
   }
 }

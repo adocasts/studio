@@ -41,7 +41,7 @@ export default class AuthController {
     const loginAttemptsRemaining = await AuthAttemptService.getRemainingAttempts(uid)
     if (loginAttemptsRemaining <= 0) {
       session.flash('error', 'Your account has been locked due to repeated bad login attempts. Please reset your password.')
-      return response.redirect('/forgot-password')
+      return response.redirect('https://adocasts.com/forgot-password')
     }
 
     try {

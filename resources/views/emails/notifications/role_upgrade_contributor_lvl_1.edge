@@ -1,0 +1,28 @@
+@set('title', 'You\'ve gained content powers at Adocasts')
+
+@layout('emails/layouts/transactional')
+
+@section('content')
+
+  @emails.paragraph()
+    Hi {{ user.username }},
+  @end
+
+  @emails.paragraph({ style: 'text-transform: capitalize;' })
+    You've gained content powers at Adocasts!
+  @end
+
+  @emails.paragraph()
+    Your role has been updated from {{ oldRole.name }} to {{ newRole.name }}.
+    This new role grants you access to our content creation system within <a href="https://studio.adocasts.com">the Adocasts Studio</a>.
+  @end
+
+  @emails.paragraph()
+    We can also enter and schedule your content! 
+    If you wish for us to enter your content, you can share the content's details 
+    within a Notion (or similar) document with tom@adocasts.com at least 48 hours prior to the desired scheduled publication.
+  @end
+  
+  @!emails.signature()
+
+@endsection

@@ -1,9 +1,11 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Taxonomy from "App/Models/Taxonomy";
-import TaxonomyValidator from "App/Validators/TaxonomyValidator";
+import TaxonomyValidator from "App/Validators/TaxonomyValidator"
 import TaxonomyService from 'App/Services/TaxonomyService'
 import CacheService from 'App/Services/CacheService'
-import AssetService from 'App/Services/AssetService';
+import AssetService from 'App/Services/AssetService'
+import Database from '@ioc:Adonis/Lucid/Database'
+import Logger from '@ioc:Logger/Discord'
 
 export default class TaxonomiesController {
   public async index({ view, bouncer }: HttpContextContract) {
@@ -29,12 +31,12 @@ export default class TaxonomiesController {
     })
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract) {
+  public async store({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('TaxonomyPolicy').authorize('create')
 
     const { postIds, ...data } = await request.validate(TaxonomyValidator)
 
-    const taxonomy = await Taxonomy.create(data)
+    const taxonomy = await Taxonomy.create({ ...data, ownerId: auth.user!.id })
 
     await TaxonomyService.syncPosts(taxonomy, postIds)
 
@@ -79,9 +81,23 @@ export default class TaxonomiesController {
 
     const flatChildren = await TaxonomyService.getFlatChildren(taxonomy.id)
     const flatChildrenIds = flatChildren.reverse().map(c => c.id)
+    const trx = await Database.transaction()
+    
+    try {
 
-    await Taxonomy.query().whereIn('id', flatChildrenIds).delete()
-    await taxonomy.delete()
+      taxonomy.useTransaction(trx)
+      
+      await trx.from('post_taxonomies').whereIn('taxonomy_id', [...flatChildrenIds, taxonomy.id]).delete()
+      await Taxonomy.query({ client: trx }).whereIn('id', flatChildrenIds).delete()
+      await taxonomy.delete()
+
+      await trx.commit()
+    } catch (error) {
+      await trx.rollback()
+      Logger.error('TaxonomiesController.destroy', error.message)
+      throw new Error(error.message)
+    }
+
     await CacheService.clearForTaxonomy(taxonomy.slug)
 
     return response.redirect().toRoute('studio.taxonomies.index')
