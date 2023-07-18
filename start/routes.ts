@@ -93,8 +93,8 @@ Route.group(() => {
     Route.group(() => {
 
       Route.get('/', 'RolesController.index').as('index')
-      Route.get('/:id', 'RolesController.show').as('show')
       Route.get('/create', 'RolesController.create').as('create')
+      Route.get('/:id', 'RolesController.show').as('show')
       Route.post('/', 'RolesController.store').as('store')
       Route.get('/:id/edit', 'RolesController.edit').as('edit')
       Route.put('/:id', 'RolesController.update').as('update')
