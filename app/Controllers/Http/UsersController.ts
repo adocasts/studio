@@ -2,9 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import Route from '@ioc:Adonis/Core/Route'
 import Role from 'App/Models/Role'
-import RoleEnum from 'App/Enums/Roles'
 import UserRoleValidator from 'App/Validators/UserRoleValidator'
-import Event from '@ioc:Adonis/Core/Event'
 import UserService from 'App/Services/UserService'
 
 export default class UsersController {

@@ -1,12 +1,13 @@
 import RoleEnum, { RoleWeights} from 'App/Enums/Roles'
 import Role from 'App/Models/Role'
 import Event from '@ioc:Adonis/Core/Event'
+import User from 'App/Models/User'
 
 export default class UserService {
   public static async sendRoleUpdateNotification(user: User, newRole: Role, oldRole: Role) {
     const oldRoleWeight = RoleWeights.findIndex(id => id === oldRole.id)
     const newRoleWeight = RoleWeights.findIndex(id => id === newRole.id)
-console.log({ oldRoleWeight, newRoleWeight })
+
     if (oldRoleWeight >= newRoleWeight) return
 
     switch (newRole.id) {
