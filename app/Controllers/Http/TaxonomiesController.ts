@@ -34,10 +34,14 @@ export default class TaxonomiesController {
   public async store({ request, response, bouncer, auth }: HttpContextContract) {
     await bouncer.with('TaxonomyPolicy').authorize('create')
 
-    const { postIds, ...data } = await request.validate(TaxonomyValidator)
+    const { postIds, assetTypeIds, altTexts, credits, ...data } = await request.validate(TaxonomyValidator)
 
     const taxonomy = await Taxonomy.create({ ...data, ownerId: auth.user!.id })
 
+    if (data.assetId) {
+      await AssetService.syncAssetTypes([data.assetId], assetTypeIds, altTexts, credits)
+    }
+    
     await TaxonomyService.syncPosts(taxonomy, postIds)
 
     return response.redirect().toRoute('studio.taxonomies.index')

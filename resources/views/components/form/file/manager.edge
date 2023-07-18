@@ -1,7 +1,7 @@
 @set('assets', assets ?? [])
 @set('readonly', readonly ?? false)
 
-<div x-data="imageUploader({ postId: {{ postId }}, images: {{ JSON.stringify(assets) }} })" class="w-full">
+<div x-data="imageUploader({ postId: {{ postId }}, images: {{ JSON.stringify(assets) }}, multiple: {{ multiple ?? true }} })" class="w-full">
   @if (!readonly)
     <input
       :id="identifier"

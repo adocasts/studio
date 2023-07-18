@@ -153,7 +153,8 @@
             @!form.file.manager({
               assets: [collection?.asset].filter(Boolean),
               placeholder: 'Select and image',
-              readonly: !isOwner
+              readonly: !isOwner,
+              multiple: false
             })
           @endslot
         @end

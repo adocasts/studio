@@ -24,9 +24,10 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
 
     async addCollection() {
       const { data } = await axios.post('/api/collections/stub', { parentId })
-      this.collections.push(data.collection)
+      const collection = { ...data.collection, posts: [] }
+      this.collections.push(collection)
       this.$nextTick(() => {
-        this.initAutocomplete(`#autocomplete_collection_${data.collection.id}`, data.collection)
+        this.initAutocomplete(`#autocomplete_collection_${data.collection.id}`, collection)
       })
     },
 
@@ -50,7 +51,7 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
     getIgnoreIds(collection) {
       if (collection) {
         const c = this.collections.find(c => c.id === collection.id)
-        return c.posts.map(p => p.id)
+        return c.posts?.map(p => p.id) ?? []
       }
 
       return this.posts.map(p => p.id)
@@ -58,10 +59,12 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
 
     initAutocomplete(selector, collection) {
       // The autoComplete.js Engine instance creator
+      console.log({ el: document.querySelector(selector) })
       const autoCompleteJS = new Autocomplete({
         selector,
         data: {
           src: async (query) => {
+            console.log({ query })
             try {
               this.loading = true
               const ignoreIds = this.getIgnoreIds(collection).join(',')
@@ -108,7 +111,7 @@ function collectionManager({ parentId, collections = [], posts = [] }) {
           highlight: true
         }
       });
-
+      console.log({ autoCompleteJS })
       autoCompleteJS.input.addEventListener("selection", (event) => {
         const feedback = event.detail;
         autoCompleteJS.input.blur();

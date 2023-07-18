@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-function imageUploader({ postId, images = [] } = {}) {
+function imageUploader({ postId, images = [], multiple = true } = {}) {
   const generateId = () => '_' + Math.random().toString(36).substr(2, 9)
 
   return {
@@ -15,12 +15,19 @@ function imageUploader({ postId, images = [] } = {}) {
     identifier: generateId(),
     isHovered: false,
     isUploading: false,
+    multiple,
 
     fileChosen(event) {
       this.fileToDataUrl(event, async src => {
         this.isUploading = true
         const id = generateId()
-        this.images.push({ id, src, file: event.target.files[0], loading: true })
+
+        if (this.multiple) {
+          this.images.push({ id, src, file: event.target.files[0], loading: true })
+        } else {
+          this.images = [{ id, src, file: event.target.files[0], loading: true }]
+        }
+
         const { data } = await axios.post('/api/studio/assets', this.getPayload(event.target.files[0]))
         
         if (!data.isSuccess) {
@@ -29,7 +36,7 @@ function imageUploader({ postId, images = [] } = {}) {
           return
         }
 
-        this.images = this.images.map(i => i.id === id ? ({ ...i, id: data.asset.id, loading: false }) : i)
+        this.images = this.images.map(i => i.id === id ? ({ ...i, src: `/img/${data.asset.filename}`, id: data.asset.id, loading: false }) : i)
         event.target.value = null
         this.isUploading = false
       })
