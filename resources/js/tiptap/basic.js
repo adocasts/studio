@@ -129,3 +129,35 @@ window.setupEditor = function(content) {
     },
   }
 }
+
+window.setupImageUploadModal = function(defaultState = {}) {
+  return {
+    isOpen: false,
+    filename: '',
+    altText: '',
+    source: '',
+    resolver: null,
+
+    ...defaultState,
+
+    open(resolver) {
+      this.resolver = resolver
+      this.filename = ''
+      this.altText = ''
+      this.source = ''
+      this.isOpen = true
+    },
+
+    insert(el) {
+      const images = el.querySelector('.file-manager')._x_dataStack[0].images
+      
+      if (!images?.length) return this.resolver(false) && this.cancel()
+
+      this.resolver(images[0])
+    },
+
+    cancel() {
+      this.isOpen = false
+    }
+  }
+}

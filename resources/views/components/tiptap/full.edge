@@ -1,5 +1,5 @@
-<div x-data="setupEditor({{ stringify(value) ?? '' }})" x-init="() => init($refs.element)">
-  <div class="bubble-menu bg-gray-900 text-gray-400 text-sm py-1 px-2 rounded-md">
+<div x-data="setupEditor({{ stringify(value) ?? '' }})" x-init="() => init($refs.element)" class="editor">
+  <div class="bubble-menu bg-slate-900 text-slate-400 text-sm py-1 px-2 rounded-md">
     <template x-if="typeof isInitialized === 'boolean'">
       <div class="flex items-center space-x-2">
         <button type="button" @click="command('h3')" :class="{ 'text-white': isActive('bold') }">
@@ -26,6 +26,32 @@
 
   <div x-ref="element" class="{{ className ?? 'prose mt-3 mb-6' }}"></div>
   <input type="hidden" name="{{ name ?? 'body' }}" :value="content">
+</div>
+
+<div x-cloak x-data="setupImageUploadModal()" class="relative z-10 editor-image-upload" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div x-show="isOpen" class="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity"></div>
+
+  <div x-show="isOpen" class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+        <div x-ref="fileWrapper" class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+          @form.input({ type: 'group', label: 'Upload image to insert', help: 'Max image size of 2MB' })
+            @slot('input')
+              @!form.file.manager({
+                useNames: false,
+                assets: [],
+                placeholder: 'Select an image'
+              })
+            @endslot
+          @end
+        </div>
+        <div class="bg-slate-50 px-4 py-3 -mt-4 sm:flex sm:flex-row-reverse sm:px-6">
+          <button @click="insert($refs.fileWrapper)" type="button" class="inline-flex w-full justify-center rounded-md bg-brand-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 sm:ml-3 sm:w-auto">Insert Image</button>
+          <button @click="cancel" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:mt-0 sm:w-auto">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="{{ asset('assets/tiptap_basic.js') }}"></script>

@@ -1,11 +1,12 @@
 @set('assets', assets ?? [])
 @set('readonly', readonly ?? false)
+@set('useNames', typeof useNames !== 'undefined' ? useNames : true)
 
-<div x-data="imageUploader({ postId: {{ postId }}, images: {{ JSON.stringify(assets) }}, multiple: {{ multiple ?? true }} })" class="w-full">
+<div x-data="imageUploader({ postId: {{ postId }}, images: {{ JSON.stringify(assets) }}, multiple: {{ multiple ?? true }} })" class="w-full file-manager">
   @if (!readonly)
     <input
       :id="identifier"
-      :name="name"
+      {{{ useNames ? ':name="name"' : '' }}}
       :class="`file-drop ${isHovered ? 'is-hovered' : ''}`"
       type="file"
       ref="thumbnail"
@@ -45,16 +46,18 @@
           @endif
           <img :src="`${image.src}?w=400`" class="max-w-full h-full object-fit rounded border border-gray-300" />
         </div>
-        <input type="hidden" name="assetIds[]" :value="image.id" />
+        <input type="hidden" {{{ useNames && `name="assetIds[]"` }}} :value="image.id" />
         <div x-show="image.loading">Loading ...</div>
         <div class="flex flex-col space-y-1">
-          <select name="assetTypeIds[]" class="text-xs {{ readonly && 'text-gray-600 cursor-not-allowed' }}" {{ readonly && 'readonly disabled' }} x-model="image.assetTypeId">
-            <option disabled readonly>Asset Type</option>
-            <option value="1">Thumbnail</option>
-            <option value="2">Cover</option>
-          </select>
-          <input class="text-xs {{ readonly && 'text-gray-600 cursor-not-allowed' }}" {{ readonly && 'readonly' }} type="text" name="altTexts[]" :value="image.altText" placeholder="Alt Text" />
-          <input class="text-xs {{ readonly && 'text-gray-600 cursor-not-allowed' }}" {{ readonly && 'readonly' }} type="text" name="credits[]" :value="image.credit" placeholder="Credit" />
+          @if (useNames)
+            <select name="assetTypeIds[]" class="text-xs {{ readonly && 'text-gray-600 cursor-not-allowed' }}" {{ readonly && 'readonly disabled' }} x-model="image.assetTypeId">
+              <option disabled readonly>Asset Type</option>
+              <option value="1">Thumbnail</option>
+              <option value="2">Cover</option>
+            </select>
+          @endif
+          <input class="text-xs {{ readonly && 'text-gray-600 cursor-not-allowed' }}" {{ readonly && 'readonly' }} type="text" {{{ useNames && `name="altTexts[]"` }}} x-model="image.altText" placeholder="Alt Text" />
+          <input class="text-xs {{ readonly && 'text-gray-600 cursor-not-allowed' }}" {{ readonly && 'readonly' }} type="text" {{{ useNames && `name="credits[]"` }}} x-model="image.credit" placeholder="Credit" />
         </div>
       </div>
     </template>

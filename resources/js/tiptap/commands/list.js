@@ -105,7 +105,7 @@ export const commandList = [
   },
   {
     name: 'img',
-    title: 'Image',
+    title: 'Image URL',
     inline: false,
     command: ({ editor, range }) => {
       const url = window.prompt('Enter the image URL')
@@ -114,6 +114,31 @@ export const commandList = [
 
       let callList = editor.chain().focus()
       return callList.deleteRange(range).setImage({ src: url, alt: 'TODO' }).run()
+    },
+  },
+  {
+    name: 'img',
+    title: 'Image Upload',
+    inline: false,
+    command: ({ editor, range }) => {
+      const dom = editor.view.dom
+      const alpineEditor = dom.closest('.editor')
+      const imageModal = alpineEditor.parentElement.querySelector('.editor-image-upload')
+      
+      document.querySelector('.tippy-box').classList.add('hidden')
+
+      imageModal._x_dataStack[0].open((image) => { 
+
+        imageModal._x_dataStack[0].cancel()
+
+        if (!image || !image?.src) return
+
+        let callList = editor.chain().focus()
+        return callList.deleteRange(range).setImage({ 
+          src: image.src, 
+          alt: image.altText
+        }).run()
+      })
     },
   },
   {

@@ -23,9 +23,9 @@ function imageUploader({ postId, images = [], multiple = true } = {}) {
         const id = generateId()
 
         if (this.multiple) {
-          this.images.push({ id, src, file: event.target.files[0], loading: true })
+          this.images.push({ id, src, file: event.target.files[0], loading: true, altText: '', credit: '' })
         } else {
-          this.images = [{ id, src, file: event.target.files[0], loading: true }]
+          this.images = [{ id, src, file: event.target.files[0], loading: true, altText: '', credit: '' }]
         }
 
         const { data } = await axios.post('/api/studio/assets', this.getPayload(event.target.files[0]))
