@@ -1,6 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Asset from 'App/Models/Asset';
-import StorageService from 'App/Services/StorageService';
 import AssetService from 'App/Services/AssetService';
 import CacheService from 'App/Services/CacheService';
 import Database from '@ioc:Adonis/Lucid/Database';
