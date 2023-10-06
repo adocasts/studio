@@ -28,6 +28,8 @@ import * as timeago from 'timeago.js'
 import History from 'App/Models/History'
 import HistoryTypes from 'App/Enums/HistoryTypes'
 import AssetTypes from 'App/Enums/AssetTypes'
+import PaywallTypes from 'App/Enums/PaywallTypes'
+import VideoTypes from 'App/Enums/VideoTypes'
 
 export default class Post extends AppBaseModel {
   public serializeExtras = true
@@ -67,7 +69,16 @@ export default class Post extends AppBaseModel {
   public bodyTypeId: number
 
   @column()
+  public videoTypeId: VideoTypes | null
+
+  @column()
   public videoUrl: string | null
+
+  @column()
+  public videoDropboxPath: string | null
+
+  @column()
+  public videoBunnyPath: string | null
 
   @column()
   public livestreamUrl: string | null
@@ -89,6 +100,9 @@ export default class Post extends AppBaseModel {
 
   @column()
   public stateId: State
+
+  @column()
+  public paywallTypeId: PaywallTypes
 
   @column()
   public readMinutes: number

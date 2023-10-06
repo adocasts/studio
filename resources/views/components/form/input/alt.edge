@@ -71,6 +71,7 @@
         "
         style="{{ style }}"
         {{ readonly && 'readonly disabled' }}
+        {{{ attrs }}}
         @focus="focused = true"
         @blur="focused = false">
         {{{ await $slots.main() }}}

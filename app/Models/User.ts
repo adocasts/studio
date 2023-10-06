@@ -15,6 +15,12 @@ import Question from 'App/Models/Question'
 import History from './History'
 import Notification from './Notification'
 import Themes from 'App/Enums/Themes'
+import LessonRequest from './LessonRequest'
+import Roles from 'App/Enums/Roles'
+import RequestVote from './RequestVote'
+import HistoryTypes from 'App/Enums/HistoryTypes'
+import Plan from './Plan'
+import Plans from 'App/Enums/Plans'
 
 class User extends AppBaseModel {
   @column({ isPrimary: true })
@@ -22,6 +28,9 @@ class User extends AppBaseModel {
 
   @column()
   public roleId: number
+
+  @column()
+  public planId: number
 
   @column()
   @slugify({
@@ -35,6 +44,9 @@ class User extends AppBaseModel {
 
   @column({ serializeAs: null })
   public password: string
+
+  @column({ serializeAs: null })
+  public stripeCustomerId: string | null
 
   @column()
   public rememberMeToken?: string
@@ -72,6 +84,12 @@ class User extends AppBaseModel {
   @column.dateTime()
   public emailVerifiedAt: DateTime | null
 
+  @column.dateTime()
+  public planPeriodStart: DateTime | null
+
+  @column.dateTime()
+  public planPeriodEnd: DateTime | null
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -88,14 +106,17 @@ class User extends AppBaseModel {
       return `/img/${this.avatarUrl}`
     }
 
-    return gravatar.url(this.email, { s: '40' })
+    return gravatar.url(this.email, { s: '100' })
   }
 
-  @beforeSave()
-  public static async hashPassword (user: User) {
-    if (user.$dirty.password) {
-      user.password = await Hash.make(user.password)
-    }
+  @computed()
+  public get isAdmin() {
+    return this.roleId === Roles.ADMIN
+  }
+
+  @computed()
+  public get isFreeTier() {
+    return this.planId === Plans.FREE
   }
 
   @computed()
@@ -109,8 +130,18 @@ class User extends AppBaseModel {
     return false
   }
 
+  @beforeSave()
+  public static async hashPassword (user: User) {
+    if (user.$dirty.password && !user.$extras.rehash) {
+      user.password = await Hash.make(user.password)
+    }
+  }
+
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
+
+  @belongsTo(() => Plan)
+  public plan: BelongsTo<typeof Plan>
 
   @hasMany(() => Collection, {
     foreignKey: 'ownerId'
@@ -143,6 +174,16 @@ class User extends AppBaseModel {
   @hasMany(() => History)
   public histories: HasMany<typeof History>
 
+  @hasMany(() => History, {
+    onQuery: query => query.where('historyTypeId', HistoryTypes.PROGRESSION).whereNotNull('postId').where('watchSeconds', '>', 0)
+  })
+  public watchedPosts: HasMany<typeof History>
+
+  @hasMany(() => History, {
+    onQuery: query => query.where('historyTypeId', HistoryTypes.PROGRESSION).whereNotNull('postId').where('isCompleted', true)
+  })
+  public completedPosts: HasMany<typeof History>
+
   @hasMany(() => Notification)
   public notifications: HasMany<typeof Notification>
 
@@ -153,6 +194,17 @@ class User extends AppBaseModel {
 
   @hasMany(() => Question)
   public questions: HasMany<typeof Question>
+
+  @hasMany(() => LessonRequest)
+  public lessonRequests: HasMany<typeof LessonRequest>
+
+  @hasMany(() => RequestVote)
+  public requestVotes: HasMany<typeof RequestVote>
+
+  @hasMany(() => RequestVote, {
+    onQuery: query => query.whereNotNull('lessonRequestId')
+  })
+  public lessonRequestVotes: HasMany<typeof RequestVote>
 }
 
 User['findForAuth'] = function (uids: string[], uidValue: string) {

@@ -115,6 +115,18 @@
           {{--  <option value="{{ postTypes.LINK }}">Link</option>  --}}
         @end
 
+        @form.input.alt({
+          type: 'select',
+          label: 'Paywall Type',
+          name: 'paywallTypeId',
+          value: flashMessages.get('paywallTypeId') ?? post?.paywallTypeId ?? PaywallTypes.NONE,
+          errors: flashMessages.get('errors.paywallTypeId')
+        })
+          <option value="{{ PaywallTypes.NONE }}">None - available to all</option>
+          <option value="{{ PaywallTypes.DELAYED_RELEASE }}">Delayed Release - paywalled for 2 weeks</option>
+          <option value="{{ PaywallTypes.FULL }}">Full - always paywalled</option>
+        @end
+
         <details class="mb-6">
           <summary>Search Engine Optimization (SEO)</summary>
 
@@ -192,39 +204,68 @@
           @endeach
         @end
 
-        @form.input.alt({
-          label: 'Video URL',
-          name: 'videoUrl',
-          help: 'Add a YouTube video url to feature a video',
-          placeholder: 'Example: https://www.youtube.com/watch?v=kfSGzUcddjU',
-          value: flashMessages.get('videoUrl') ?? post?.videoUrl ?? '',
-          errors: flashMessages.get('errors.videoUrl'),
-          onInput: 'videoManager.onInput(event)',
-          dataAttributes: {
-            previewSelector: '#videoUrlPreview'
-          }
-        })
-          @slot('after')
-            <div id="videoUrlPreview" class="aspect-w-16 aspect-h-9 rounded overflow-hidden bg-gray-100 shadow-inner mt-3">
-              <div id="videoDurationEmbed">
-                <div class="text-gray-700 flex flex-col h-full w-full items-center justify-center">
-                  <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                  <h4 class="font-semibold">No Video</h4>
-                  <p class="text-xs">Enter a valid youtube video url to add a video to this post</p>
-                </div>
-              </div>
-            </div>
-          @endslot
-        @end
+        <div x-data="{ videoTypeId: {{ post.videoTypeId }} }">
+          @form.input.alt({
+            type: 'select',
+            label: 'Video Source',
+            help: 'Where is your video coming from?',
+            name: 'videoTypeId',
+            value: post.videoTypeId,
+            attrs: `@change="videoTypeId = $event.target.value"`
+          })
+            <option value="">-- Select video source --</option>
+            <option value="{{ VideoTypes.YOUTUBE }}">YouTube</option>
+            <option value="{{ VideoTypes.BUNNY }}">Bunny Stream</option>
+          @end
 
-        @!form.input.alt({
-          label: 'Video Length (in seconds)',
-          name: 'videoSeconds',
-          help: 'Will auto populate if your video is public',
-          placeholder: 'Enter length of video in seconds',
-          value: flashMessages.get('videoSeconds') ?? post?.videoSeconds ?? '',
-          errors: flashMessages.get('errors.videoSeconds')
-        })
+          <div x-show="videoTypeId == {{ VideoTypes.BUNNY }}">
+            @!form.input.alt({
+              label: 'Video Path',
+              name: 'videoBunnyPath',
+              help: "Enter video path on Bunny Stream Storage",
+              placeholder: 'Enter videos path or url',
+              value: flashMessages.get('videoBunnyPath') ?? post?.videoBunnyPath ?? '',
+              errors: flashMessages.get('errors.videoBunnyPath'),
+              max: 500
+            })
+          </div>
+
+          <div x-show="videoTypeId == {{ VideoTypes.YOUTUBE }}">
+            @form.input.alt({
+              label: 'Video URL',
+              name: 'videoUrl',
+              help: 'Add a YouTube video url to feature a video',
+              placeholder: 'Example: https://www.youtube.com/watch?v=kfSGzUcddjU',
+              value: flashMessages.get('videoUrl') ?? post?.videoUrl ?? '',
+              errors: flashMessages.get('errors.videoUrl'),
+              onInput: 'videoManager.onInput(event)',
+              dataAttributes: {
+                previewSelector: '#videoUrlPreview'
+              }
+            })
+              @slot('after')
+                <div id="videoUrlPreview" class="aspect-w-16 aspect-h-9 rounded overflow-hidden bg-gray-100 shadow-inner mt-3">
+                  <div id="videoDurationEmbed">
+                    <div class="text-gray-700 flex flex-col h-full w-full items-center justify-center">
+                      <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                      <h4 class="font-semibold">No Video</h4>
+                      <p class="text-xs">Enter a valid youtube video url to add a video to this post</p>
+                    </div>
+                  </div>
+                </div>
+              @endslot
+            @end
+
+            @!form.input.alt({
+              label: 'Video Length (in seconds)',
+              name: 'videoSeconds',
+              help: 'Will auto populate if your video is public',
+              placeholder: 'Enter length of video in seconds',
+              value: flashMessages.get('videoSeconds') ?? post?.videoSeconds ?? '',
+              errors: flashMessages.get('errors.videoSeconds')
+            })
+          </div>
+        </div>
 
         <details class="my-6" {{{ flashMessages.get('livestreamUrl') || post?.livestreamUrl ? 'open' : '' }}}>
           <summary class="pb-3 cursor-pointer">Livestream</summary>

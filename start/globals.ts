@@ -18,6 +18,8 @@ import Themes from 'App/Enums/Themes'
 import * as timeago from 'timeago.js'
 import IdentityService from 'App/Services/IdentityService'
 import AssetTypes from 'App/Enums/AssetTypes'
+import PaywallTypes from 'App/Enums/PaywallTypes'
+import VideoTypes from 'App/Enums/VideoTypes'
 
 if (Env.get('NODE_ENV') === 'test') {
   View.global('csrfField', () => '')
@@ -28,6 +30,8 @@ View.global('appUrl', (path) => {
 })
 
 View.global('affiliateService', AffiliateService)
+
+View.global('PaywallTypes', PaywallTypes)
 
 View.global('routePost', (post: Post, _params: { [x: string]: any }, _options: { [x: string]: any }) => {
   return post.routeUrl
@@ -141,3 +145,4 @@ View.global('PostTypeEnum', PostType)
 View.global('PostTypeEnumDesc', PostTypeDesc)
 View.global('Roles', Roles)
 View.global('Themes', Themes)
+View.global('VideoTypes', VideoTypes)

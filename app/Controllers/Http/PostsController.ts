@@ -12,6 +12,8 @@ import Asset from 'App/Models/Asset'
 import CacheService from 'App/Services/CacheService'
 import AssetService from 'App/Services/AssetService'
 import AssetTypes from 'App/Enums/AssetTypes'
+import Database from '@ioc:Adonis/Lucid/Database'
+import DiscordLogger from '@ioc:Logger/Discord'
 
 export default class PostsController {
 
@@ -142,19 +144,37 @@ export default class PostsController {
     return response.redirect().toRoute('studio.posts.index')
   }
 
-  public async destroy ({ response, params, bouncer }: HttpContextContract) {
+  public async destroy ({ response, params, session, bouncer }: HttpContextContract) {
     const post = await Post.findOrFail(params.id)
+    const trx = await Database.transaction()
 
-    await bouncer.with('PostPolicy').authorize('destroy', post)
+    post.useTransaction(trx)
 
-    await post.related('authors').detach()
+    try {
+      await bouncer.with('PostPolicy').authorize('destroy', post)
 
-    await PostService.destroyAssets(post)
-    await History.query().where('postId', params.id).delete()
+      await post.related('authors').detach()
+      
+      const comments = await post.related('comments').query()
+      const commentIds = comments.map(c => c.id)
+      await trx.from('comment_votes').whereIn('comment_id', commentIds).delete()
+      await post.related('comments').query().delete()
 
-    await CacheService.clearForPost(post.id)
-    await post.delete()
+      await PostService.destroyAssets(post)
+      await History.query().where('postId', params.id).delete()
 
+      await CacheService.clearForPost(post.id)
+      await post.delete()
+
+      await trx.commit()
+      
+      session.flash('success', 'Post has been successfully deleted')
+    } catch (error) {
+      await trx.rollback()
+      session.flash('error', 'Post failed to delete')
+      DiscordLogger.error('PostsController.destroy', error.message)
+    }
+    
     return response.redirect().toRoute('studio.posts.index')
   }
 
