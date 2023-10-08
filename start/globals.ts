@@ -20,6 +20,7 @@ import IdentityService from 'App/Services/IdentityService'
 import AssetTypes from 'App/Enums/AssetTypes'
 import PaywallTypes from 'App/Enums/PaywallTypes'
 import VideoTypes from 'App/Enums/VideoTypes'
+import CouponDurations from 'App/Enums/CouponDurations'
 
 if (Env.get('NODE_ENV') === 'test') {
   View.global('csrfField', () => '')
@@ -146,3 +147,4 @@ View.global('PostTypeEnumDesc', PostTypeDesc)
 View.global('Roles', Roles)
 View.global('Themes', Themes)
 View.global('VideoTypes', VideoTypes)
+View.global('CouponDurations', CouponDurations)

@@ -75,9 +75,6 @@ export default class Post extends AppBaseModel {
   public videoUrl: string | null
 
   @column()
-  public videoDropboxPath: string | null
-
-  @column()
   public videoBunnyPath: string | null
 
   @column()

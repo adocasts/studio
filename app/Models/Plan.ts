@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, HasMany, column, computed, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Env from '@ioc:Adonis/Core/Env'
+import User from './User'
 
 export default class Plan extends BaseModel {
   @column({ isPrimary: true })
@@ -27,6 +28,27 @@ export default class Plan extends BaseModel {
   @column()
   public isActive: true
 
+  @column()
+  public couponCode: string | null
+
+  @column()
+  public couponDiscountFixed: number | null
+
+  @column()
+  public couponDiscountPercent: number | null
+
+  @column()
+  public couponDurationId: number | null
+
+  @column()
+  public stripeCouponId: string | null
+
+  @column.dateTime()
+  public couponStartAt: DateTime | null
+
+  @column.dateTime()
+  public couponEndAt: DateTime | null
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -50,4 +72,28 @@ export default class Plan extends BaseModel {
 
     return this.stripePriceTestId
   }
+
+  @computed()
+  public get hasActiveSale() {
+    if (!this.couponCode) return false
+    const isStartInRange = !this.couponStartAt || this.couponStartAt <= DateTime.now()
+    const isEndInRange = !this.couponEndAt || this.couponEndAt >= DateTime.now()
+    return isStartInRange && isEndInRange && (this.couponDiscountFixed || this.couponDiscountPercent)
+  }
+
+  @computed()
+  public get salePrice() {
+    if (!this.hasActiveSale) return this.price
+
+    if (this.couponDiscountFixed) {
+      return this.price - this.couponDiscountFixed
+    } else if (this.couponDiscountPercent) {
+      return this.price - (this.price * (this.couponDiscountPercent / 100))
+    }
+
+    return this.price
+  }
+
+  @hasMany(() => User)
+  public users: HasMany<typeof User>
 }

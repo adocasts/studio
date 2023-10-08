@@ -1,9 +1,12 @@
-import Asset from "App/Models/Asset";
-import Post from "App/Models/Post";
-import StorageService from "./StorageService";
+import Asset from "App/Models/Asset"
+import Post from "App/Models/Post"
+import StorageService from "./StorageService"
 import CacheService from 'App/Services/CacheService'
 import PostType from 'App/Enums/PostType'
-import DiscordLogger from "@ioc:Logger/Discord";
+import DiscordLogger from "@ioc:Logger/Discord"
+import VideoTypes from "App/Enums/VideoTypes"
+import { Dropbox } from 'dropbox'
+import Env from '@ioc:Adonis/Core/Env'
 
 export default class PostService {
   public static async getFeatureSingle(excludeIds: number[] = []) {
@@ -92,5 +95,12 @@ export default class PostService {
     await CacheService.setSerialized('isLive', live?.serialize(), CacheService.fiveMinutes)
 
     return live
+  }
+
+  public async populateVideoProperties(post: Partial<Post>) {
+    if (!post.videoTypeId || post.videoTypeId === VideoTypes.YOUTUBE) return
+    if (!post.videoBunnyPath) return
+    
+    // TODO: get video's duration from bunny stream api
   }
 }

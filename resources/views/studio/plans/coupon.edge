@@ -1,0 +1,115 @@
+@layout('layouts/studio')
+
+@section('heading')
+  @studio.heading({
+    heading: 'Set Plan Coupons',
+    wrapSlot: true
+  })
+    <div class="space-x-3">
+      @button({ type: 'submit', form: 'couponForm' })
+        Set Plan Coupons
+      @end
+    </div>
+  @end
+@endsection
+
+@section('content')
+
+  @set('action', route('studio.plans.coupon.update', {}, {
+    qs: {
+      _method: 'PUT'
+    }
+  }))
+
+  <form id="couponForm" name="couponForm" method="POST" action="{{ action }}">
+    {{ csrfField() }}
+
+    <div class="flex flex-wrap -mx-3">
+      <div class="w-full lg:w-2/3 lg:px-3">
+        @!form.input.alt({
+          label: 'Coupon Code',
+          name: 'couponCode',
+          placeholder: 'Enter the coupon code',
+          value: flashMessages.get('couponCode'),
+          errors: flashMessages.get('errors.couponCode'),
+          max: 100,
+          title: true
+        })
+
+        @!form.input.alt({
+          label: 'Stripe Coupon Id',
+          name: 'stripeCouponId',
+          placeholder: 'Enter the coupon id',
+          value: flashMessages.get('stripeCouponId'),
+          errors: flashMessages.get('errors.stripeCouponId'),
+          max: 100
+        })
+
+        @!form.input.alt({
+          type: 'number',
+          label: 'Fixed Discount Amount (optional)',
+          name: 'couponDiscountFixed',
+          placeholder: 'Cent value of fixed discount',
+          value: flashMessages.get('couponDiscountFixed'),
+          errors: flashMessages.get('errors.couponDiscountFixed'),
+          max: 999,
+        })
+
+        @!form.input.alt({
+          type: 'number',
+          label: 'Percent Discount Amount (optional)',
+          name: 'couponDiscountPercent',
+          placeholder: 'Percent value of discount (use whole number, ex: 15 for 15% off)',
+          value: flashMessages.get('couponDiscountPercent'),
+          errors: flashMessages.get('errors.couponDiscountPercent'),
+          max: 99,
+        })
+
+        @form.input.alt({
+          type: 'select',
+          label: 'Percent Duration',
+          name: 'couponDurationId',
+          value: flashMessages.get('couponDurationId'),
+          errors: flashMessages.get('errors.couponDurationId'),
+        })
+          <option value="{{ CouponDurations.FOREVER }}">Forever</option>
+          <option value="{{ CouponDurations.ONCE }}">Once</option>
+        @end
+
+        @!form.input.alt({
+          type: 'date',
+          label: 'Coupon Start Date',
+          name: 'couponStartAt',
+          value: flashMessages.get('couponStartAt'),
+          errors: flashMessages.get('errors.couponStartAt'),
+        })
+
+        @!form.input.alt({
+          type: 'date',
+          label: 'Coupon End Date',
+          name: 'couponEndAt',
+          value: flashMessages.get('couponEndAt'),
+          errors: flashMessages.get('errors.couponEndAt'),
+        })
+
+        @form.input({
+          type: 'group',
+          label: 'Plans To Update'
+        })
+          @slot('input')
+            <div class="flex flex-col gap-2">
+              @each (plan in plans)
+                <label>
+                  <input type="checkbox" name="planIds[]" value="{{ plan.id }}" />&nbsp;
+                  {{ plan.name }}
+                </label>
+              @endeach
+            </div>
+          @endslot
+        @end
+        
+      </div>
+    </div>
+  </form>
+
+@endsection

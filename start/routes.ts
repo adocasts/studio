@@ -105,6 +105,14 @@ Route.group(() => {
 
   Route.group(() => {
 
+    Route.get('/', 'PlansController.index').as('index')
+    Route.get('/coupon', 'PlansController.coupon').as('coupon')
+    Route.put('/coupon', 'PlansController.couponUpdate').as('coupon.update')
+
+  }).prefix('/plans').as('plans').middleware(['role:admin'])
+
+  Route.group(() => {
+
     Route.get('/', 'SettingsController.index').as('index')
     Route.patch('/username', 'SettingsController.usernameUpdate').as('username.update')
     Route.post('/username/unique', 'SettingsController.usernameUnique').as('username.unique')
