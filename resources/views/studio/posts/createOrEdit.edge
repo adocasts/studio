@@ -204,13 +204,13 @@
           @endeach
         @end
 
-        <div x-data="{ videoTypeId: {{ post.videoTypeId }} }">
+        <div x-data="{ videoTypeId: {{ post?.videoTypeId }} }">
           @form.input.alt({
             type: 'select',
             label: 'Video Source',
             help: 'Where is your video coming from?',
             name: 'videoTypeId',
-            value: post.videoTypeId,
+            value: post?.videoTypeId,
             attrs: `@change="videoTypeId = $event.target.value"`
           })
             <option value="">-- Select video source --</option>
