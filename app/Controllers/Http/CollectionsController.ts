@@ -123,7 +123,7 @@ export default class CollectionsController {
 
     const collection = await CollectionService.delete(params.id)
 
-    if (request.accepts(['json'])) {
+    if (request.headers()['content-type']?.includes('application/json')) {
       return response.json({ success: true, collection })
     }
 

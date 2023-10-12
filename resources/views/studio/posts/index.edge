@@ -78,7 +78,10 @@
             <a href="{{ route('studio.posts.edit', { id: scope.row.id }) }}" class="text-gray-950 hover:text-brand-800 mr-3">
               Edit
             </a>
-            <form method="POST" action="{{ route('studio.posts.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}">
+            <form 
+              method="POST" 
+              action="{{ route('studio.posts.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}"
+              onsubmit="return confirm(`Are you sure you'd like to delete {{ scope.row.title }}?`)">
               {{ csrfField() }}
               <button type="submit" class="text-red-800 hover:text-red-900">
                 Delete

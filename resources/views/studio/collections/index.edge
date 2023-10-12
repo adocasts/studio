@@ -62,7 +62,10 @@
               Edit
             </a>
             @can('CollectionPolicy.delete', scope.row)
-              <form method="POST" action="{{ route('studio.collections.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}">
+              <form 
+                method="POST" 
+                action="{{ route('studio.collections.destroy', { id: scope.row.id }, { qs: { _method: 'DELETE' }}) }}"
+                onsubmit="return confirm(`Are you sure you'd like to delete {{ scope.row.name }}?`)">
                 {{ csrfField() }}
                 <button type="submit" class="text-red-800 hover:text-red-900">
                   Delete
