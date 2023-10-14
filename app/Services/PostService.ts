@@ -99,7 +99,7 @@ export default class PostService {
 
   public async populateVideoProperties(post: Partial<Post>) {
     if (!post.videoTypeId || post.videoTypeId === VideoTypes.YOUTUBE) return
-    if (!post.videoBunnyPath) return
+    if (!post.videoBunnyId) return
     
     // TODO: get video's duration from bunny stream api
   }

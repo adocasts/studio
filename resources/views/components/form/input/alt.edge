@@ -48,7 +48,7 @@
         {{ readonly && 'readonly' }}
         oninput="{{ onInput ?? undefined }}"
         @focus="focused = true"
-        @blur="focused = false"
+        @blur="focused = false; $dispatch('updated', $el.value)"
       ></textarea>
     @elseif(type === 'group')
       @if($slots.input)
@@ -73,7 +73,7 @@
         {{ readonly && 'readonly disabled' }}
         {{{ attrs }}}
         @focus="focused = true"
-        @blur="focused = false">
+        @blur="focused = false; $dispatch('updated', $el.value)">
         {{{ await $slots.main() }}}
       </select>
     @else
@@ -101,7 +101,7 @@
         {{ readonly && 'readonly' }}
         oninput="{{ onInput ?? undefined }}"
         @focus="focused = true"
-        @blur="focused = false">
+        @blur="focused = false; $dispatch('updated', $el.value)">
     @endif
 
     @if(error && type !== 'group' && type !== 'password')

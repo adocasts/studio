@@ -218,16 +218,44 @@
             <option value="{{ VideoTypes.BUNNY }}">Bunny Stream</option>
           @end
 
-          <div x-show="videoTypeId == {{ VideoTypes.BUNNY }}">
-            @!form.input.alt({
-              label: 'Video Path',
-              name: 'videoBunnyPath',
-              help: "Enter video path on Bunny Stream Storage",
-              placeholder: 'Enter videos path or url',
-              value: flashMessages.get('videoBunnyPath') ?? post?.videoBunnyPath ?? '',
-              errors: flashMessages.get('errors.videoBunnyPath'),
+          <div x-show="videoTypeId == {{ VideoTypes.BUNNY }}" x-data="{ 
+            showEmbed: {{ !!post?.videoBunnyId }},
+            videoId: '{{ post?.videoBunnyId }}',
+            onBlur({ detail }) {
+              this.videoId = detail
+              this.showEmbed = !!detail
+            },
+            syncDuration(el) {
+              console.log({ el, duration: el.duration })
+              document.forms[0].videoSeconds.value = Math.round(el.duration)
+            }
+          }" @updated="onBlur">
+            @form.input.alt({
+              label: 'Bunny Video Id',
+              name: 'videoBunnyId',
+              help: "Enter the Bunny Stream Video Id",
+              placeholder: 'Enter video id',
+              value: flashMessages.get('videoBunnyId') ?? post?.videoBunnyId ?? '',
+              errors: flashMessages.get('errors.videoBunnyId'),
               max: 500
             })
+              @slot('after')
+                <div id="bunnyPreview" class="aspect-w-16 aspect-h-9 rounded overflow-hidden bg-gray-100 shadow-inner mt-6">
+                  <div x-show="!showEmbed">
+                    <div class="text-gray-700 flex flex-col h-full w-full items-center justify-center">
+                      <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                      <h4 class="font-semibold">No Video</h4>
+                      <p class="text-xs">Enter a valid video id to add a video to this post</p>
+                    </div>
+                  </div>
+                  <template x-if="showEmbed">
+                    <video controls @loadedmetadata="syncDuration($el)">
+                      <source :src="`https://videos.adocasts.com/${videoId}/play_360p.mp4`" size="360" type="video/mp4" />
+                    </video>
+                  </template>
+                </div>
+              @endslot
+            @end
           </div>
 
           <div x-show="videoTypeId == {{ VideoTypes.YOUTUBE }}">
@@ -255,7 +283,9 @@
                 </div>
               @endslot
             @end
+          </div>
 
+          <div x-show="videoTypeId">
             @!form.input.alt({
               label: 'Video Length (in seconds)',
               name: 'videoSeconds',

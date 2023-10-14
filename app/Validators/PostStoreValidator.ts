@@ -32,7 +32,7 @@ export default class PostStoreValidator extends BaseValidator {
     livestreamUrl: schema.string.optional({ trim: true }, [rules.maxLength(255), rules.url()]),
 		videoTypeId: schema.number.optional(),
 		videoUrl: schema.string.optional({ trim: true }, [rules.maxLength(255), rules.url()]),
-		videoBunnyPath: schema.string.optional({ trim: true }, [rules.maxLength(500)]),
+		videoBunnyId: schema.string.optional({ trim: true }, [rules.maxLength(500)]),
     videoSeconds: schema.number.optional(),
 		timezone: schema.string.optional({ trim: true }),
 		publishAtDate: schema.date.optional({ format: 'yyyy-MM-dd' }),
