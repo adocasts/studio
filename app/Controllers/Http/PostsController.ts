@@ -135,6 +135,10 @@ export default class PostsController {
 
     post.merge({ ...data, publishAt })
 
+    if (!data.videoBunnyId) post.videoBunnyId = null
+    if (!data.videoUrl) post.videoUrl = null
+    if (!data.videoBunnyId && !data.videoUrl) post.videoSeconds = 0
+
     await post.save()
     await AssetService.syncAssetTypes(assetIds, assetTypeIds, altTexts, credits)
     await PostService.syncAssets(post, syncAssetIds)

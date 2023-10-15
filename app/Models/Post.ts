@@ -338,9 +338,9 @@ export default class Post extends AppBaseModel {
 
     switch (this.postTypeId) {
       case PostType.BLOG:
-        return `/posts/${this.slug}`
+        return `/blog/${this.slug}`
       case PostType.NEWS:
-        return `/news/${this.slug}`
+        return `/blog/${this.slug}`
       case PostType.LIVESTREAM:
         return `/streams/${this.slug}`
       case PostType.SNIPPET:
