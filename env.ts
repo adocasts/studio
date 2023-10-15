@@ -52,6 +52,4 @@ export default Env.rules({
 	REDIS_PASSWORD: Env.schema.string.optional(),
 
 	ALLOWED_ORIGINS: Env.schema.string(),
-
-	DROPBOX_ACCESS_TOKEN: Env.schema.string()
 })
