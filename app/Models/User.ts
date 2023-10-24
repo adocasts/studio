@@ -21,6 +21,7 @@ import RequestVote from './RequestVote'
 import HistoryTypes from 'App/Enums/HistoryTypes'
 import Plan from './Plan'
 import Plans from 'App/Enums/Plans'
+import Invoice from './Invoice'
 
 class User extends AppBaseModel {
   @column({ isPrimary: true })
@@ -205,6 +206,9 @@ class User extends AppBaseModel {
     onQuery: query => query.whereNotNull('lessonRequestId')
   })
   public lessonRequestVotes: HasMany<typeof RequestVote>
+
+  @hasMany(() => Invoice)
+  public invoices: HasMany<typeof Invoice>
 }
 
 User['findForAuth'] = function (uids: string[], uidValue: string) {

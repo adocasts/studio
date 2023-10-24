@@ -4,6 +4,7 @@ import AssetService from 'App/Services/AssetService';
 import CacheService from 'App/Services/CacheService';
 import Database from '@ioc:Adonis/Lucid/Database';
 import Drive from '@ioc:Adonis/Core/Drive'
+import Application from '@ioc:Adonis/Core/Application';
 
 export default class AssetsController {
   public async index({ }: HttpContextContract) {
@@ -124,7 +125,10 @@ export default class AssetsController {
     await asset.related('taxonomies').query().update({ assetId: null })
     await asset.delete()
 
-    await Drive.delete(asset.filename)
+    // don't actually delete the file when not in production
+    if (Application.inProduction) {
+      await Drive.delete(asset.filename)
+    }
 
     return response.status(200).json({
       status: 200,

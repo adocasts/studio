@@ -1,10 +1,10 @@
 {
-  "assets/app.css": "http://localhost:64876/assets/app.css",
-  "assets/app.js": "http://localhost:64876/assets/app.js",
-  "assets/post.js": "http://localhost:64876/assets/post.js",
-  "assets/stream.js": "http://localhost:64876/assets/stream.js",
-  "assets/file_manager.js": "http://localhost:64876/assets/file_manager.js",
-  "assets/tiptap_basic.js": "http://localhost:64876/assets/tiptap_basic.js",
-  "assets/studio.posts.editor.js": "http://localhost:64876/assets/studio.posts.editor.js",
-  "assets/studio.collections.js": "http://localhost:64876/assets/studio.collections.js"
+  "assets/app.css": "http://localhost:63685/assets/app.css",
+  "assets/app.js": "http://localhost:63685/assets/app.js",
+  "assets/post.js": "http://localhost:63685/assets/post.js",
+  "assets/stream.js": "http://localhost:63685/assets/stream.js",
+  "assets/file_manager.js": "http://localhost:63685/assets/file_manager.js",
+  "assets/tiptap_basic.js": "http://localhost:63685/assets/tiptap_basic.js",
+  "assets/studio.posts.editor.js": "http://localhost:63685/assets/studio.posts.editor.js",
+  "assets/studio.collections.js": "http://localhost:63685/assets/studio.collections.js"
 }

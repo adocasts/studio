@@ -30,8 +30,9 @@ export default class UsersController {
     const roles = await Role.all()
     const user = await User.findOrFail(params.id)
     const profile = await user.related('profile').query().firstOrFail()
+    const invoices = await user.related('invoices').query().orderBy('updatedAt', 'desc')
 
-    return view.render('studio/users/show', { roles, user, profile })
+    return view.render('studio/users/show', { roles, user, profile, invoices })
   }
 
   public async edit({}: HttpContextContract) {}

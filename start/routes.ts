@@ -88,6 +88,7 @@ Route.group(() => {
 
     Route.get('/', 'UsersController.index').as('index')
     Route.get('/:id', 'UsersController.show').as('show').where('id', Route.matchers.number())
+    Route.post('/:id/invoice', 'InvoicesController.store').as('invoices.store').where('id', Route.matchers.number())
     Route.patch('/:id/role', 'UsersController.role').as('role').where('id', Route.matchers.number())
     
     Route.group(() => {
