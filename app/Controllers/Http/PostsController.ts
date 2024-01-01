@@ -110,7 +110,7 @@ export default class PostsController {
 
     const postTypes = PostType
     const taxonomies = await TaxonomyService.getAllForTree()
-    
+
     return view.render('studio/posts/createOrEdit', { post, assets, taxonomies, postTypes })
   }
 

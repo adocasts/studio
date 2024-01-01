@@ -30,6 +30,7 @@ export default class CollectionValidator extends BaseValidator {
 		collectionTypeId: schema.number.optional(),
 		statusId: schema.number.optional(),
 		stateId: schema.number.optional(),
+		difficultyId: schema.number.optional(),
 		outdatedVersionId: schema.number.optional([rules.exists({ table: 'collections', column: 'id' })]),
 		assetId: schema.number.optional([rules.exists({ table: 'assets', column: 'id' })]),
 		pageTitle: schema.string.optional({ trim: true }, [rules.maxLength(100)]),

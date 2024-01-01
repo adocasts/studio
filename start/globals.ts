@@ -21,6 +21,7 @@ import AssetTypes from 'App/Enums/AssetTypes'
 import PaywallTypes from 'App/Enums/PaywallTypes'
 import VideoTypes from 'App/Enums/VideoTypes'
 import CouponDurations from 'App/Enums/CouponDurations'
+import Difficulties from 'App/Enums/difficulties'
 
 if (Env.get('NODE_ENV') === 'test') {
   View.global('csrfField', () => '')
@@ -136,6 +137,7 @@ View.global('GA_PROPERTY', Env.get('GA_PROPERTY'))
 
 View.global('DateTime', DateTime)
 View.global('AssetTypes', AssetTypes)
+View.global('Difficulties', Difficulties)
 View.global('StateEnum', States)
 View.global('StateEnumDesc', StateDesc)
 View.global('StatusEnum', Status)

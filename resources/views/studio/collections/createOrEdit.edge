@@ -132,6 +132,20 @@
           <option value="{{ collectionTypes.PLAYLIST }}">Playlist</option>
           <option value="{{ collectionTypes.PATH }}">Learning Path</option>
         @end
+        
+        @form.input.alt({
+          type: 'select',
+          label: 'Difficulty',
+          name: 'difficultyId',
+          value: flashMessages.get('difficultyId') || collection?.difficultyId,
+          errors: flashMessages.get('errors.difficultyId'),
+          readonly: !isOwner
+        })
+          <option value="">None</option>
+          <option value="{{ Difficulties.BEGINNER }}">Beginner</option>
+          <option value="{{ Difficulties.INTERMEDIATE }}">Intermediate</option>
+          <option value="{{ Difficulties.ADVANCED }}">Advanced</option>
+        @end
 
         @form.input.alt({
           type: 'select',
