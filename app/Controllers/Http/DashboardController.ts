@@ -7,7 +7,7 @@ export default class DashboardController {
   public async index({ view }: HttpContextContract) {
     const postCount = await Post.query().apply(s => s.published()).getCount()
     const postSeconds = await Post.query().sum('video_seconds').first()
-    const seriesCount = await Collection.series().wherePublic().getCount()
+    const seriesCount = await Collection.series().wherePublic().whereNull('parentId').getCount()
     const topicCount = await Taxonomy.query().getCount()
 
     return view.render('studio/index', { postCount, postSeconds, seriesCount, topicCount })
