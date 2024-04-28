@@ -1,3 +1,4 @@
+import Redis from '@ioc:Adonis/Addons/Redis'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Collection from 'App/Models/Collection'
 import Post from 'App/Models/Post'
@@ -11,5 +12,15 @@ export default class DashboardController {
     const topicCount = await Taxonomy.query().getCount()
 
     return view.render('studio/index', { postCount, postSeconds, seriesCount, topicCount })
+  }
+
+  public async clearBentoCache({ response, session }: HttpContextContract) {
+    const keys = await Redis.keys('bentocache:*')
+    
+    await Redis.del(keys)
+
+    session.flash('success', 'Bentocache items have been cleared')
+    
+    return response.redirect().back()
   }
 }

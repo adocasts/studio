@@ -2,6 +2,13 @@
 
 @section('heading')
   @studio.heading({ heading: 'Welcome to the Adocasts Studio' })
+    <form method="POST" action="{{ route('studio.dashboard.clearBentoCache', {}, { qs: { _method: 'DELETE' } })}}">
+      {{ csrfField() }}
+
+      @button({ type: 'submit', size: 'sm' })
+        Clear Content Cache
+      @end
+    </form>
   @end
 @endsection
 

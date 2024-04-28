@@ -36,6 +36,7 @@ Route.get('/img/*', 'AssetsController.show').where('path', /.*/).as('img')
 Route.group(() => {
 
   Route.get('/', 'DashboardController.index').as('dashboard.index')
+  Route.delete('/cache/bento', 'DashboardController.clearBentoCache').as('dashboard.clearBentoCache').middleware(['role:admin'])
 
   Route.group(() => {
 
