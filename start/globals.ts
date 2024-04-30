@@ -21,7 +21,7 @@ import AssetTypes from 'App/Enums/AssetTypes'
 import PaywallTypes from 'App/Enums/PaywallTypes'
 import VideoTypes from 'App/Enums/VideoTypes'
 import CouponDurations from 'App/Enums/CouponDurations'
-import Difficulties from 'App/Enums/difficulties'
+import Difficulties from 'App/Enums/Difficulties'
 
 if (Env.get('NODE_ENV') === 'test') {
   View.global('csrfField', () => '')
