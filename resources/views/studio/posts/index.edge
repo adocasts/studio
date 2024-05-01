@@ -76,7 +76,12 @@
             @if (scope.row.paywallTypeId === 1)
               Not Paywalled
             @elseif (scope.row.paywallTypeId === 2)
-              Delayed Release
+              <div>
+                Delayed Release
+              </div>
+              <div class="text-xs text-gray-800">
+                Exclusive Til: {{ scope.row.publishAt.plus({ days: 14 }).toFormat('MMM dd, yy') }}
+              </div>
             @elseif (scope.row.paywallTypeId === 3)
               Full Paywall
             @endif
