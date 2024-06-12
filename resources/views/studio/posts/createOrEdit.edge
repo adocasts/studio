@@ -207,7 +207,7 @@
         <div x-data="{ videoTypeId: {{ post?.videoTypeId }} }">
           @form.input.alt({
             type: 'select',
-            label: 'Video Source',
+            label: 'Video Source (being deprecated)',
             help: 'Where is your video coming from?',
             name: 'videoTypeId',
             value: post?.videoTypeId,
@@ -218,7 +218,7 @@
             <option value="{{ VideoTypes.BUNNY }}">Bunny Stream</option>
           @end
 
-          <div x-show="videoTypeId == {{ VideoTypes.BUNNY }}" x-data="{ 
+          <div x-data="{ 
             showEmbed: {{ !!post?.videoBunnyId }},
             videoId: '{{ post?.videoBunnyId }}',
             onBlur({ detail }) {
@@ -258,9 +258,9 @@
             @end
           </div>
 
-          <div x-show="videoTypeId == {{ VideoTypes.YOUTUBE }}">
+          <div>
             @form.input.alt({
-              label: 'Video URL',
+              label: 'YouTube Video URL',
               name: 'videoUrl',
               help: 'Add a YouTube video url to feature a video',
               placeholder: 'Example: https://www.youtube.com/watch?v=kfSGzUcddjU',
