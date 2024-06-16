@@ -283,7 +283,7 @@
                         <template x-for="(post, y) in subcollection.posts" :key="post.id">
                           <li class="flex justify-between">
                             <input type="hidden" :name="`subcollectionPostIds[${x}][]`" :value="post.id" />
-                            <span x-text="post.title" class="text-sm"></span>
+                            <a :href="`/posts/${post.id}/edit`" x-text="post.title" class="text-sm hover:underline" target="_blank"></a>
                             <button type="button" class="text-red-700" @click="removePost(post, subcollection)">
                               &times;
                             </button>
@@ -315,7 +315,7 @@
                   <template x-for="post in posts" :key="post.id">
                     <li class="flex justify-between">
                       <input type="hidden" name="postIds[]" :value="post.id" />
-                      <span x-text="post.title" class="text-sm"></span>
+                      <a :href="`/posts/${post.id}/edit`" x-text="post.title" class="text-sm hover:underline" target="_blank"></a>
                       <button type="button" class="text-red-700" @click="removePost(post)">
                         &times;
                       </button>
