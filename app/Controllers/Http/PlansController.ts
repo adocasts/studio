@@ -1,7 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Plan from 'App/Models/Plan'
-import Route from '@ioc:Adonis/Core/Route';
-import CouponValidator from 'App/Validators/CouponValidator';
+import Route from '@ioc:Adonis/Core/Route'
+import CouponValidator from 'App/Validators/CouponValidator'
+import Plans from 'App/Enums/Plans'
+import StripeSubscriptionStatuses from 'App/Enums/StripeSubscriptionStatuses'
 
 export default class PlansController {
   public async index({ view, request, bouncer }: HttpContextContract) {
@@ -9,7 +11,15 @@ export default class PlansController {
 
     const page = request.input('page', 1)
     const plans = await Plan.query()
-      .withCount('users')
+      .withCount('users', (query) =>
+        query.where((query) => {
+          query
+            .where('planId', Plans.FOREVER)
+            .orWhere('planId', Plans.FREE)
+            .orWhere('stripeSubscriptionStatus', StripeSubscriptionStatuses.ACTIVE)
+            .orWhere('stripeSubscriptionStatus', StripeSubscriptionStatuses.COMPLETE)
+        })
+      )
       .orderBy('createdAt', 'desc')
       .paginate(page, 30)
 

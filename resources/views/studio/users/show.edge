@@ -16,6 +16,13 @@
       </h3>
       <p>{{ user.email }}</p>
     @endslot
+
+    <form action="{{ route('studio.users.destroy', { id: user.id })}}?_method=DELETE" method="POST">
+      {{ csrfField() }}
+      @button({ variant: 'bad', type: 'submit' })
+        Delete Account
+      @end
+    </form>
   @end
 @endsection
 

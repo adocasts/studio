@@ -91,6 +91,7 @@ Route.group(() => {
     Route.get('/:id', 'UsersController.show').as('show').where('id', Route.matchers.number())
     Route.post('/:id/invoice', 'InvoicesController.store').as('invoices.store').where('id', Route.matchers.number())
     Route.patch('/:id/role', 'UsersController.role').as('role').where('id', Route.matchers.number())
+    Route.delete('/:id', 'UsersController.destroy').as('destroy').where('id', Route.matchers.number())
     
     Route.group(() => {
 

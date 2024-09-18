@@ -1,6 +1,18 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, belongsTo, BelongsTo, hasMany, HasMany, hasOne, HasOne, manyToMany, ManyToMany, computed } from '@ioc:Adonis/Lucid/Orm'
+import {
+  column,
+  beforeSave,
+  belongsTo,
+  BelongsTo,
+  hasMany,
+  HasMany,
+  hasOne,
+  HasOne,
+  manyToMany,
+  ManyToMany,
+  computed
+} from '@ioc:Adonis/Lucid/Orm'
 import Role from './Role'
 import Profile from './Profile'
 import Post from './Post'
@@ -22,6 +34,10 @@ import HistoryTypes from 'App/Enums/HistoryTypes'
 import Plan from './Plan'
 import Plans from 'App/Enums/Plans'
 import Invoice from './Invoice'
+import StripeSubscriptionStatuses from 'App/Enums/StripeSubscriptionStatuses'
+import Progress from './Progress'
+import SessionLog from './SessionLog'
+import Discussion from './Discussion'
 
 class User extends AppBaseModel {
   @column({ isPrimary: true })
@@ -48,6 +64,15 @@ class User extends AppBaseModel {
 
   @column({ serializeAs: null })
   public stripeCustomerId: string | null
+
+  @column()
+  public stripeSubscriptionStatus: StripeSubscriptionStatuses | null
+
+  @column.dateTime()
+  public stripeSubscriptionPausedAt: DateTime | null
+
+  @column.dateTime()
+  public stripeSubscriptionCanceledAt: DateTime | null
 
   @column()
   public rememberMeToken?: string
@@ -103,7 +128,7 @@ class User extends AppBaseModel {
       if (this.avatarUrl.startsWith('https://')) {
         return this.avatarUrl
       }
-      
+
       return `/img/${this.avatarUrl}`
     }
 
@@ -124,7 +149,7 @@ class User extends AppBaseModel {
   public get isEmailVerified() {
     // has gone through verification flow
     if (this.emailVerified == this.email && this.emailVerifiedAt) return true
-    
+
     // using third-party social auth
     if (this.email == this.githubEmail || this.email == this.googleEmail) return true
 
@@ -132,7 +157,7 @@ class User extends AppBaseModel {
   }
 
   @beforeSave()
-  public static async hashPassword (user: User) {
+  public static async hashPassword(user: User) {
     if (user.$dirty.password && !user.$extras.rehash) {
       user.password = await Hash.make(user.password)
     }
@@ -176,12 +201,20 @@ class User extends AppBaseModel {
   public histories: HasMany<typeof History>
 
   @hasMany(() => History, {
-    onQuery: query => query.where('historyTypeId', HistoryTypes.PROGRESSION).whereNotNull('postId').where('watchSeconds', '>', 0)
+    onQuery: (query) =>
+      query
+        .where('historyTypeId', HistoryTypes.PROGRESSION)
+        .whereNotNull('postId')
+        .where('watchSeconds', '>', 0)
   })
   public watchedPosts: HasMany<typeof History>
 
   @hasMany(() => History, {
-    onQuery: query => query.where('historyTypeId', HistoryTypes.PROGRESSION).whereNotNull('postId').where('isCompleted', true)
+    onQuery: (query) =>
+      query
+        .where('historyTypeId', HistoryTypes.PROGRESSION)
+        .whereNotNull('postId')
+        .where('isCompleted', true)
   })
   public completedPosts: HasMany<typeof History>
 
@@ -203,17 +236,31 @@ class User extends AppBaseModel {
   public requestVotes: HasMany<typeof RequestVote>
 
   @hasMany(() => RequestVote, {
-    onQuery: query => query.whereNotNull('lessonRequestId')
+    onQuery: (query) => query.whereNotNull('lessonRequestId')
   })
   public lessonRequestVotes: HasMany<typeof RequestVote>
 
   @hasMany(() => Invoice)
   public invoices: HasMany<typeof Invoice>
+
+  @hasMany(() => Progress)
+  public progresses: HasMany<typeof Progress>
+
+  @hasMany(() => SessionLog)
+  public sessions: HasMany<typeof SessionLog>
+
+  @hasMany(() => Discussion)
+  declare discussions: HasMany<typeof Discussion>
+
+  @manyToMany(() => Discussion, {
+    pivotTable: 'discussion_votes'
+  })
+  declare discussionVotes: ManyToMany<typeof Discussion>
 }
 
 User['findForAuth'] = function (uids: string[], uidValue: string) {
   const query = this.query()
-  uids.map(uid => query.orWhere(uid, 'ILIKE', uidValue))
+  uids.map((uid) => query.orWhere(uid, 'ILIKE', uidValue))
   return query.first()
 }
 

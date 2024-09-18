@@ -56,5 +56,28 @@ export default class UsersController {
     return response.redirect().toRoute('studio.users.show', { id: params.id })
   }
 
-  public async destroy({}: HttpContextContract) {}
+  public async destroy({ response, params, session, bouncer }: HttpContextContract) {
+    await bouncer.with('StudioPolicy').authorize('adminOnly')
+
+    const user = await User.findOrFail(params.id)
+
+    if (user.stripeCustomerId) {
+      session.flash('error', 'Please ensure this user is not an active subscriber and dissociate their stripe account first')
+      return response.redirect().back()
+    }
+
+    const success = await UserService.destroy(user)
+
+    if (!success) {
+      session.flash(
+        'error',
+        'Apologies, but something went wrong.'
+      )
+      return response.redirect().back()
+    }
+
+    session.flash('success', 'User successfully deleted')
+
+    return response.redirect().toRoute('studio.users.index')
+  }
 }
